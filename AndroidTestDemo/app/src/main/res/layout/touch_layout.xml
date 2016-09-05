@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ifnoif.androidtestdemo.touch.MyViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <View
+        <com.ifnoif.androidtestdemo.touch.MyView
+            android:id="@+id/view1"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#021457"/>
 
-        <View
+        <com.ifnoif.androidtestdemo.touch.MyView
+            android:id="@+id/view2"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="120dp"
             android:layout_weight="1"
-            android:background="#3afaff"/>
-    </LinearLayout>
+            android:background="#3afaff"
+            android:layout_marginTop="120dp"/>
+    </FrameLayout>
 
-</LinearLayout>
+</com.ifnoif.androidtestdemo.touch.MyViewGroup>

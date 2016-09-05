@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
+import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
 
 import java.util.ArrayList;
@@ -32,12 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void initListData() {
         mTestList.add(new ItemData("Touch事件分发", TouchFragment.class));
+        mTestList.add(new ItemData("Collapse动画", CollapseToolbarFragment.class));
+        mTestList.add(new ItemData("Scroller用法", WheelFragment.class));
+        mTestList.add(new ItemData("自定义View", CustomViewFragment.class));
     }
 
     private void initListView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycle_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
         mAdapter = new RecyclerView.Adapter<MyViewHolder>() {
