@@ -23,6 +23,7 @@ import com.ifnoif.androidtestdemo.R;
  * parent同上，child接收不到任何事件
  * .当parent dispatchTouchEvent返回true, 且调用super.dispatchTouchEvent 时，且onInterceptTouchEvent返回false,但不调用super..
  * 会走子view的onTouchEvent,super.onInterceptTouchEvent只是返回一个false
+ * 当parent dispatchTouchEvent返回false时，将无法接收后续事件
  *
  *
  *
