@@ -1,5 +1,6 @@
 package com.ifnoif.androidtestdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
+import com.ifnoif.androidtestdemo.share_transation.MainShare;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
 
 import java.util.ArrayList;
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("Collapse动画", CollapseToolbarFragment.class));
         mTestList.add(new ItemData("Scroller用法", WheelFragment.class));
         mTestList.add(new ItemData("自定义View", CustomViewFragment.class));
+        mTestList.add(new ItemData("共享动画", MainShare.class));
+        mTestList.add(new ItemData("插件加载", LoadClassDemo.class));
     }
 
     private void initListView() {
@@ -101,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static class ItemData {
         public String title;
-        public Class<? extends Fragment> classArg;
+        public Class classArg;
 
-        public ItemData(String title, Class<? extends Fragment> classArg) {
+        public ItemData(String title, Class classArg) {
             this.title = title;
             this.classArg = classArg;
         }
@@ -127,13 +131,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             ItemData itemData = (ItemData) view.getTag();
-            try {
-                Fragment fragment = itemData.classArg.newInstance();
-                showFragment(fragment);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+            if (Fragment.class.isAssignableFrom(itemData.classArg)) {
+                try {
+                    Fragment fragment = (Fragment) itemData.classArg.newInstance();
+                    showFragment(fragment);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            } else {
+                startActivity(new Intent(MainActivity.this, itemData.classArg));
             }
+
 
         }
     }

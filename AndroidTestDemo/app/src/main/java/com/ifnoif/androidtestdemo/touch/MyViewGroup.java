@@ -17,12 +17,15 @@ public class MyViewGroup extends LinearLayout {
 
     public static String getTouch(MotionEvent event) {
         String action = null;
-        switch (event.getAction()) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 action = "down";
                 break;
             case MotionEvent.ACTION_MOVE:
                 action = "move";
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                action = "pointer_up";
                 break;
             case MotionEvent.ACTION_UP:
                 action = "up";
@@ -48,7 +51,7 @@ public class MyViewGroup extends LinearLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         MyLog.d("onInterceptTouchEvent:" + getTouch(ev));
         super.onInterceptTouchEvent(ev);
-        return false;//
+        return true;//
     }
 
     @Override
