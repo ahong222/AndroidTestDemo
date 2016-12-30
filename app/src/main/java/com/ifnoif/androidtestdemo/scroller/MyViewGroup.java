@@ -29,13 +29,31 @@ public class MyViewGroup extends LinearLayout {
     }
 
     public void beginScroll() {
+        Log.d(TAG, "beginScroll currentX:" + mScroller.getCurrX()+" x:"+getScrollX());
         if (!s1) {
-            mScroller.startScroll(0, 0, 0, 0, 1000);
+            mScroller.startScroll(getScrollX(), 0, 500, 0, 1000);
             s1 = true;
         } else {
-            mScroller.startScroll(0, 0, -500, 0, 1000);
+            mScroller.startScroll(getScrollX(), 0, -500, 0, 1000);
             s1 = false;
         }
+        invalidate();
+    }
+
+    public void beginFling() {
+        int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
+        if (!s1) {
+            mScroller.fling(0,0, screenWidth, 0,
+                    Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+            s1 = true;
+        } else {
+            mScroller.fling(0,0, -screenWidth, 0,
+                    Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            s1 = false;
+        }
+//        mScroller.setFinalX(mScroller.getFinalX()/2);
+        Log.d(TAG, "beginFling currentX:" + mScroller.getCurrX()+" x:"+getScrollX()+" finalX:"+mScroller.getFinalX());
         invalidate();
     }
 }
