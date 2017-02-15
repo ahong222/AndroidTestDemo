@@ -1,11 +1,10 @@
-package com.cmcm.osvideo.sdk.demo;
+package com.ifnoif.androidtestdemo;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -16,7 +15,6 @@ import com.cmcm.osvideo.sdk.view.VViewPager;
 
 import java.util.HashMap;
 
-import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 
 /**
  * Created by syh on 2016/12/19.
@@ -24,7 +22,7 @@ import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 
 public class ViewPagerActivity extends Activity {
 
-    private VViewPager viewPager;
+    private com.cmcm.osvideo.sdk.view.VViewPager viewPager;
     private HashMap<Integer, View> viewHashMap = new HashMap<Integer, View>();
     private PagerAdapter mAdapter = new PagerAdapter() {
         @Override
@@ -51,9 +49,9 @@ public class ViewPagerActivity extends Activity {
             View view = viewHashMap.get(position);
             if (view == null) {
                 view = new Button(ViewPagerActivity.this);
-                view.setBackgroundColor(0x99775566+(int)Math.random()*1000000);
+                view.setBackgroundColor(0x99775566 + (int) Math.random() * 1000000);
                 ((Button) view).setText("item position:" + position);
-                view.setTag("tag"+position);
+                view.setTag("tag" + position);
                 viewHashMap.put(position, view);
             }
 
@@ -62,7 +60,7 @@ public class ViewPagerActivity extends Activity {
             layoutParams.height = getResources().getDisplayMetrics().widthPixels;
             layoutParams.gravity = Gravity.CENTER;
 
-            container.addView(view,layoutParams);
+            container.addView(view, layoutParams);
             return view;
         }
 

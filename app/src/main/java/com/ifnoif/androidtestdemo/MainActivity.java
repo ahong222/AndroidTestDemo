@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ifnoif.androidtestdemo.ORM.RealmFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.share_transation.MainShare;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("自定义View", CustomViewFragment.class));
         mTestList.add(new ItemData("共享动画", MainShare.class));
         mTestList.add(new ItemData("插件加载", LoadClassDemo.class));
+        mTestList.add(new ItemData("Realm数据库", RealmFragment.class));
     }
 
     private void initListView() {
