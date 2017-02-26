@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.ifnoif.androidtestdemo.ORM.RealmFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
+import com.ifnoif.androidtestdemo.intent_test.IntentFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.share_transation.MainShare;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("插件加载", LoadClassDemo.class));
         mTestList.add(new ItemData("Realm数据库", RealmFragment.class));
         mTestList.add(new ItemData("Volley", VolleyFragment.class));
+        mTestList.add(new ItemData("Intent Test", IntentFragment.class));
     }
 
     private void initListView() {
