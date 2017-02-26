@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("共享动画", MainShare.class));
         mTestList.add(new ItemData("插件加载", LoadClassDemo.class));
         mTestList.add(new ItemData("Realm数据库", RealmFragment.class));
+        mTestList.add(new ItemData("Volley", VolleyFragment.class));
     }
 
     private void initListView() {

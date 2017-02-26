@@ -1,9 +1,11 @@
 package com.ifnoif.androidtestdemo.ORM;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +15,26 @@ import android.widget.TextView;
 import com.ifnoif.androidtestdemo.BaseFragment;
 import com.ifnoif.androidtestdemo.R;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.DynamicRealm;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
 
 /**
  * Created by apple on 17-2-15.
  */
 
 public class RealmFragment extends BaseFragment {
-
+    private static final String TAG = "RealmFragment";
     private static int index = 0;
 
     @BindView(R.id.recycle_view)
@@ -46,6 +55,13 @@ public class RealmFragment extends BaseFragment {
     }
 
     private void init() {
+        initRealm(getContext());
+
+        List<DBInfo> result = queryAll();
+        if (result != null) {
+            mDataList.addAll(result);
+        }
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleView.setLayoutManager(layoutManager);
@@ -65,6 +81,7 @@ public class RealmFragment extends BaseFragment {
                 addDBInfoToDB(dbInfo);
             }
         });
+
 
     }
 
@@ -94,7 +111,7 @@ public class RealmFragment extends BaseFragment {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            name = (TextView)itemView.findViewById(R.id.name);
+            name = (TextView) itemView.findViewById(R.id.name);
             delete = (Button) itemView.findViewById(R.id.delete);
         }
 
@@ -118,22 +135,70 @@ public class RealmFragment extends BaseFragment {
                 deleteDBInfoFromDB(dbInfo);
 
                 mDataList.remove(position);
-                mAdapter.notifyItemRemoved(position);
+                mAdapter.notifyDataSetChanged();
 
             }
         }
     };
 
     private void deleteDBInfoFromDB(DBInfo dbInfo) {
+        Realm realm = Realm.getDefaultInstance();
+
+        // All changes to data must happen in a transaction
+
+        final DBInfo managedDBInfo = realm.where(DBInfo.class).equalTo("name", dbInfo.name).findFirst();
+        if (managedDBInfo != null) {
+
+        }
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                managedDBInfo.deleteFromRealm();
+            }
+        });
 
     }
 
     private void addDBInfoToDB(DBInfo dbInfo) {
-
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        DBInfo info = realm.createObject(DBInfo.class);
+        info.id = dbInfo.id;
+        info.name = dbInfo.name;
+        realm.commitTransaction();
     }
 
-    public static class DBInfo {
-        public String id;
-        public String name;
+    private List<DBInfo> queryAll() {
+        RealmResults<DBInfo> results = Realm.getDefaultInstance().where(DBInfo.class).findAll();
+        return results;
+    }
+
+    public void initRealm(Context context) {
+//        byte[] key = new byte[64];
+//        new SecureRandom().nextBytes(key);
+        Realm.init(context);
+//        RealmMigration migration = new RealmMigration() {
+//            @Override
+//            public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+//                Log.d(TAG, "migrate oldVersion:" + oldVersion + " newVersion:" + newVersion);
+//            }
+//        };
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name("realmdb.realm") //文件名
+                .schemaVersion(1) //版本号
+//                .migration(migration)//数据库版本迁移（数据库升级，当数据库中某个表添加字段或者删除字段）
+                .deleteRealmIfMigrationNeeded()//声明版本冲突时自动删除原数据库(当调用了该方法时，上面的方法将失效)。
+                .build();//创建
+        Realm.setDefaultConfiguration(config);
+    }
+
+    public void destroyRealm() {
+        Realm.getDefaultInstance().close();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        destroyRealm();
     }
 }
