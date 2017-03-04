@@ -1,15 +1,20 @@
 package com.ifnoif.androidtestdemo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.ifnoif.androidtestdemo.ORM.RealmFragment;
@@ -21,6 +26,7 @@ import com.ifnoif.androidtestdemo.touch.TouchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         initListData();
         initListView();
+
+        addSystemView();
     }
 
     private void initListData() {
@@ -150,5 +158,27 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    public void addSystemView() {
+        Button button = new Button(this);
+        button.setText("demo");
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        WindowManager.LayoutParams wmParams = new WindowManager.LayoutParams(50, 50);
+        wmParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+
+        wmParams.format = PixelFormat.RGBA_8888; // 设置图片格式，效果为背景透明
+
+        /*
+        * 下面的flags属性的效果形同“锁定”。 悬浮窗不可触摸，不接受任何事件,同时不影响后面的事件响应。
+        */
+        wmParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        wmParams.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL; // 调整悬浮窗口至右侧中间
+        // 以屏幕左上角为原点，设置x、y初始值
+        wmParams.x = 0;
+        wmParams.y = 0;
+
+        windowManager.addView(button, wmParams);
     }
 }

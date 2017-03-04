@@ -1,14 +1,22 @@
 package com.ifnoif.androidtestdemo.intent_test;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ifnoif.androidtestdemo.BaseFragment;
 import com.ifnoif.androidtestdemo.R;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,15 +41,10 @@ public class IntentFragment extends BaseFragment {
     }
 
     private void init() {
-        startService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTask(v);
-            }
-        });
+
     }
 
-    //    @OnClick(R.id.start_service)
+    @OnClick(R.id.start_service)
     public void startTask(View view) {
         new Thread() {
             @Override
@@ -64,5 +67,19 @@ public class IntentFragment extends BaseFragment {
         }.start();
 
 
+    }
+
+    @OnClick(R.id.job_service)
+    public void setJobService() {
+        Log.d(TAG, "setJobService");
+
+        JobInfo.Builder builder = new JobInfo.Builder(100, new ComponentName(getContext(), MyJobService.class));
+        builder.setPeriodic(2 * 60 * 1000);
+        builder.setPersisted(true);
+        builder.setRequiresDeviceIdle(true);
+
+
+        JobScheduler jobScheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
     }
 }
