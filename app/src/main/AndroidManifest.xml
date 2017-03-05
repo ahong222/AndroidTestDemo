@@ -24,6 +24,8 @@
         </activity>
         <activity android:name=".share_transation.MainShare" />
         <activity android:name=".share_transation.TargetShare" />
+        <activity android:name=".ORM.RealmActivity" />
+        <service android:name=".ORM.RealmTestService" android:process=":p1" />
 
         <service android:name=".intent_test.TaskService" />
         <service

@@ -9,4 +9,6 @@ import io.realm.RealmObject;
 public class DBInfo extends RealmObject {
     public String id;
     public String name;
+    public int count=0;
+    public String column_v3;
 }

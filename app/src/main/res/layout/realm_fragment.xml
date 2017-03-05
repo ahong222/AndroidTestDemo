@@ -22,6 +22,11 @@
                 android:layout_height="wrap_content"
                 android:text="增加"/>
 
+            <Button
+                android:id="@+id/another_process"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="另一个进程"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

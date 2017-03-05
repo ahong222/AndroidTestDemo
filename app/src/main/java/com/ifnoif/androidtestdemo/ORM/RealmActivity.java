@@ -1,8 +1,9 @@
 package com.ifnoif.androidtestdemo.ORM;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,29 +13,28 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ifnoif.androidtestdemo.BaseFragment;
+import com.ifnoif.androidtestdemo.BaseActivity;
 import com.ifnoif.androidtestdemo.R;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
-import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 /**
  * Created by apple on 17-2-15.
  */
 
-public class RealmFragment extends BaseFragment {
-    private static final String TAG = "RealmFragment";
+public class RealmActivity extends BaseActivity {
+    private static final String TAG = "RealmActivity";
     private static int index = 0;
 
     @BindView(R.id.recycle_view)
@@ -44,25 +44,23 @@ public class RealmFragment extends BaseFragment {
 
     List<DBInfo> mDataList = new ArrayList<DBInfo>();
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.realm_fragment, container, false);
-        ButterKnife.bind(this, view);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.realm_fragment);
+        ButterKnife.bind(this);
 
-        init();
-        return view;
+        initView();
     }
 
-    private void init() {
-        initRealm(getContext());
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
 
-        List<DBInfo> result = queryAll();
-        if (result != null) {
-            mDataList.addAll(result);
-        }
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+    private void initView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleView.setLayoutManager(layoutManager);
         mRecycleView.setAdapter(mAdapter);
@@ -72,7 +70,8 @@ public class RealmFragment extends BaseFragment {
             public void onClick(View view) {
                 DBInfo dbInfo = new DBInfo();
                 dbInfo.id = UUID.randomUUID().toString();
-                dbInfo.name = "item " + index;
+                dbInfo.name = mDataList.size() == 0 ? "first" : "item " + index;
+                dbInfo.column_v3 = mDataList.size() == 0 ? "first" : "column_v3:" + index;
                 index++;
 
 
@@ -83,6 +82,31 @@ public class RealmFragment extends BaseFragment {
         });
 
 
+    }
+
+    private void initData() {
+        new AsyncTask<Void, Void, List<DBInfo>>() {
+            @Override
+            protected List<DBInfo> doInBackground(Void... params) {
+                long time = System.currentTimeMillis();
+                initRealm(RealmActivity.this);
+                Log.d(TAG, "init db time:" + (System.currentTimeMillis() - time));
+
+                List<DBInfo> result = queryAll();
+                Log.d(TAG, "queryAll time:" + (System.currentTimeMillis() - time));
+
+                return Realm.getDefaultInstance().copyFromRealm(result);
+            }
+
+            @Override
+            protected void onPostExecute(List<DBInfo> result) {
+                if (result != null) {
+                    mDataList.clear();
+                    mDataList.addAll(result);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        }.execute();
     }
 
     private RecyclerView.Adapter<ViewHolder> mAdapter = new RecyclerView.Adapter<ViewHolder>() {
@@ -107,23 +131,54 @@ public class RealmFragment extends BaseFragment {
 
 
         TextView name;
+        TextView count;
+        Button update;
         Button delete;
 
         public ViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
+            count = (TextView) itemView.findViewById(R.id.count);
+            update = (Button) itemView.findViewById(R.id.update);
             delete = (Button) itemView.findViewById(R.id.delete);
         }
 
         public void onBind(int position) {
             DBInfo dbInfo = mDataList.get(position);
-            name.setText(dbInfo.name);
+            name.setText(dbInfo.column_v3);
+            count.setText(dbInfo.count+"");
 
+            update.setTag(position);
+            update.setOnClickListener(mUpdateListener);
             delete.setTag(position);
             delete.setOnClickListener(mDeleteListener);
         }
     }
+    private View.OnClickListener mUpdateListener = new View.OnClickListener() {
 
+        @Override
+        public void onClick(View v) {
+            Object tag = v.getTag();
+            if (tag instanceof Integer) {
+                int position = (Integer) tag;
+
+                DBInfo dbInfo = mDataList.get(position);
+                dbInfo.count = (int)(1000*Math.random());
+                mAdapter.notifyItemChanged(position);
+
+                Realm realm = Realm.getDefaultInstance();
+
+                // All changes to data must happen in a transaction
+
+                realm.beginTransaction();
+                final DBInfo managedDBInfo = realm.where(DBInfo.class).equalTo("name", dbInfo.name).findFirst();
+                if (managedDBInfo != null) {
+                    managedDBInfo.count = dbInfo.count;
+                }
+                realm.commitTransaction();
+            }
+        }
+    };
     private View.OnClickListener mDeleteListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -142,30 +197,39 @@ public class RealmFragment extends BaseFragment {
     };
 
     private void deleteDBInfoFromDB(DBInfo dbInfo) {
+        long time = System.currentTimeMillis();
+
         Realm realm = Realm.getDefaultInstance();
 
         // All changes to data must happen in a transaction
 
+        realm.beginTransaction();
         final DBInfo managedDBInfo = realm.where(DBInfo.class).equalTo("name", dbInfo.name).findFirst();
         if (managedDBInfo != null) {
-
+            managedDBInfo.deleteFromRealm();
         }
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                managedDBInfo.deleteFromRealm();
-            }
-        });
+        realm.commitTransaction();
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                managedDBInfo.deleteFromRealm();
+//            }
+//        });
 
+        Log.d(TAG, "delete time:" + (System.currentTimeMillis() - time));
     }
 
     private void addDBInfoToDB(DBInfo dbInfo) {
+        long time = System.currentTimeMillis();
+
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         DBInfo info = realm.createObject(DBInfo.class);
         info.id = dbInfo.id;
         info.name = dbInfo.name;
         realm.commitTransaction();
+
+        Log.d(TAG, "add time:" + (System.currentTimeMillis() - time));
     }
 
     private List<DBInfo> queryAll() {
@@ -173,20 +237,24 @@ public class RealmFragment extends BaseFragment {
         return results;
     }
 
-    public void initRealm(Context context) {
+    public static void initRealm(Context context) {
 //        byte[] key = new byte[64];
 //        new SecureRandom().nextBytes(key);
         Realm.init(context);
-//        RealmMigration migration = new RealmMigration() {
-//            @Override
-//            public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-//                Log.d(TAG, "migrate oldVersion:" + oldVersion + " newVersion:" + newVersion);
-//            }
-//        };
+        RealmMigration migration = new RealmMigration() {
+            @Override
+            public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+                Log.d(TAG, "migrate oldVersion:" + oldVersion + " newVersion:" + newVersion);
+            }
+        };
+        /**
+         * 版本记录
+         * 3:增加了column_v3
+         */
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("realmdb.realm") //文件名
-                .schemaVersion(1) //版本号
-//                .migration(migration)//数据库版本迁移（数据库升级，当数据库中某个表添加字段或者删除字段）
+                .schemaVersion(3) //版本号
+                .migration(migration)//数据库版本迁移（数据库升级，当数据库中某个表添加字段或者删除字段）
                 .deleteRealmIfMigrationNeeded()//声明版本冲突时自动删除原数据库(当调用了该方法时，上面的方法将失效)。
                 .build();//创建
         Realm.setDefaultConfiguration(config);
@@ -200,5 +268,20 @@ public class RealmFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         destroyRealm();
+    }
+
+    @OnClick(R.id.another_process)
+    public void onClickAnotherProcess(View view) {
+        Intent intent = new Intent(this, RealmTestService.class);
+        startService(intent);
+
+        new Thread() {
+            @Override
+            public void run() {
+                Realm realm = Realm.getDefaultInstance();
+                RealmTestService.updateFirstItemCount(realm);
+
+            }
+        }.start();
     }
 }
