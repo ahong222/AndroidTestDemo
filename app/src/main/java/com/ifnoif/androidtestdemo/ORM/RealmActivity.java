@@ -71,7 +71,6 @@ public class RealmActivity extends BaseActivity {
                 DBInfo dbInfo = new DBInfo();
                 dbInfo.id = UUID.randomUUID().toString();
                 dbInfo.name = mDataList.size() == 0 ? "first" : "item " + index;
-                dbInfo.column_v3 = mDataList.size() == 0 ? "first" : "column_v3:" + index;
                 index++;
 
 
@@ -145,8 +144,8 @@ public class RealmActivity extends BaseActivity {
 
         public void onBind(int position) {
             DBInfo dbInfo = mDataList.get(position);
-            name.setText(dbInfo.column_v3);
-            count.setText(dbInfo.count+"");
+            name.setText(dbInfo.name);
+            count.setText(dbInfo.count + "");
 
             update.setTag(position);
             update.setOnClickListener(mUpdateListener);
@@ -154,6 +153,7 @@ public class RealmActivity extends BaseActivity {
             delete.setOnClickListener(mDeleteListener);
         }
     }
+
     private View.OnClickListener mUpdateListener = new View.OnClickListener() {
 
         @Override
@@ -163,7 +163,7 @@ public class RealmActivity extends BaseActivity {
                 int position = (Integer) tag;
 
                 DBInfo dbInfo = mDataList.get(position);
-                dbInfo.count = (int)(1000*Math.random());
+                dbInfo.count++;
                 mAdapter.notifyItemChanged(position);
 
                 Realm realm = Realm.getDefaultInstance();
@@ -174,6 +174,7 @@ public class RealmActivity extends BaseActivity {
                 final DBInfo managedDBInfo = realm.where(DBInfo.class).equalTo("name", dbInfo.name).findFirst();
                 if (managedDBInfo != null) {
                     managedDBInfo.count = dbInfo.count;
+//                    managedDBInfo.updateName();
                 }
                 realm.commitTransaction();
             }
@@ -209,12 +210,6 @@ public class RealmActivity extends BaseActivity {
             managedDBInfo.deleteFromRealm();
         }
         realm.commitTransaction();
-//        realm.executeTransaction(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                managedDBInfo.deleteFromRealm();
-//            }
-//        });
 
         Log.d(TAG, "delete time:" + (System.currentTimeMillis() - time));
     }
@@ -245,6 +240,10 @@ public class RealmActivity extends BaseActivity {
             @Override
             public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
                 Log.d(TAG, "migrate oldVersion:" + oldVersion + " newVersion:" + newVersion);
+
+                if (oldVersion == 0 && newVersion == 1) {
+                    realm.getSchema().get(DBInfo.class.getName()).addField("v1", String.class);
+                }
             }
         };
         /**
@@ -253,10 +252,11 @@ public class RealmActivity extends BaseActivity {
          */
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("realmdb.realm") //文件名
-                .schemaVersion(3) //版本号
+                .schemaVersion(1) //版本号
                 .migration(migration)//数据库版本迁移（数据库升级，当数据库中某个表添加字段或者删除字段）
-                .deleteRealmIfMigrationNeeded()//声明版本冲突时自动删除原数据库(当调用了该方法时，上面的方法将失效)。
+//                .deleteRealmIfMigrationNeeded()//声明版本冲突时自动删除原数据库(当调用了该方法时，上面的方法将失效)。
                 .build();//创建
+
         Realm.setDefaultConfiguration(config);
     }
 
