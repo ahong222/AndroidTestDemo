@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <Button
+        android:id="@+id/start_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="启动闹钟"/>
+
+    <Button
+        android:id="@+id/start_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="启动前台服务"/>
+    <Button
+        android:id="@+id/test_huawei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="华为受保护应用"/>
+    <Button
+        android:id="@+id/query_xiaomi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询小米神隐模式数据"/>
+    <Button
+        android:id="@+id/query_huawei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查询华为白名单"/>
+</LinearLayout>

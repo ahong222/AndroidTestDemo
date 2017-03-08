@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ifnoif.androidtestdemo.ORM.RealmActivity;
+import com.ifnoif.androidtestdemo.alarm.AlarmFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
 import com.ifnoif.androidtestdemo.intent_test.IntentFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTestList.add(new ItemData("Volley", VolleyFragment.class));
         mTestList.add(new ItemData("Intent Test", IntentFragment.class));
+        mTestList.add(new ItemData("Alarm Test", AlarmFragment.class));
     }
 
     private void initListView() {

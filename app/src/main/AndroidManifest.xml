@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="miui.permission.powerkeeper.HIDDEN_MODE_PROVIDER"/>
 
     <application
         android:allowBackup="true"
@@ -34,6 +36,24 @@
         <service
             android:name=".intent_test.PushService"
             android:process=":my_push" />
+        <receiver android:name=".alarm.AlarmBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.syh.action.alarm"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".alarm.AlarmIdleBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.syh.action.idlealarm"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".alarm.AlarmClockBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.syh.action.alarmclock"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".alarm.ForegroundService"
+            android:process=":foreground_service"/>
     </application>
 
 </manifest>
