@@ -28,4 +28,8 @@ public class DBInfo extends RealmObject {
      *
      *
      */
+    public String v1 = "v1";
+    public String v2 = "v2";
+    public String v3 = "v3";
+    public String v6 = "v6";
 }
