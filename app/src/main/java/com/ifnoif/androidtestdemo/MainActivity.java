@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ifnoif.androidtestdemo.ORM.RealmActivity;
+import com.ifnoif.androidtestdemo.account.AccountMainActivity;
 import com.ifnoif.androidtestdemo.alarm.AlarmFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
 import com.ifnoif.androidtestdemo.intent_test.IntentFragment;
+import com.ifnoif.androidtestdemo.intent_test.PushService;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.share_transation.MainShare;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("Volley", VolleyFragment.class));
         mTestList.add(new ItemData("Intent Test", IntentFragment.class));
         mTestList.add(new ItemData("Alarm Test", AlarmFragment.class));
+        mTestList.add(new ItemData("账户测试", AccountMainActivity.class));
     }
 
     private void initListView() {

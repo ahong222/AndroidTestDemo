@@ -9,6 +9,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="miui.permission.powerkeeper.HIDDEN_MODE_PROVIDER"/>
 
+    <!--<uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />-->
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,6 +32,7 @@
         <activity android:name=".share_transation.MainShare" />
         <activity android:name=".share_transation.TargetShare" />
         <activity android:name=".ORM.RealmActivity" />
+        <activity android:name=".account.AccountMainActivity" />
         <service android:name=".ORM.RealmTestService" android:process=":p1" />
 
         <service android:name=".intent_test.TaskService" />
@@ -35,7 +41,7 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".intent_test.PushService"
-            android:process=":my_push" />
+            android:process=":my_push"/>
         <receiver android:name=".alarm.AlarmBroadcastReceiver">
             <intent-filter>
                 <action android:name="com.syh.action.alarm"/>
@@ -54,6 +60,41 @@
 
         <service android:name=".alarm.ForegroundService"
             android:process=":foreground_service"/>
+
+        <!-- 账户-->
+        <service
+            android:name=".account.AuthenticatorService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <provider
+            android:name=".account.StubProvider"
+            android:authorities="com.myprovider"
+            android:exported="false"
+            android:syncable="true" />
+
+        <service
+            android:name=".account.SyncService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":sync">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+
+        </service>
+
     </application>
 
 </manifest>
