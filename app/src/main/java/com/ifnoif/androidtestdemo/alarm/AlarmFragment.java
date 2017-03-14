@@ -2,6 +2,8 @@ package com.ifnoif.androidtestdemo.alarm;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,6 +21,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -322,5 +326,21 @@ public class AlarmFragment extends BaseFragment {
                 Log.d(TAG, "query fail");
             }
         }.start();
+    }
+
+    @OnClick(R.id.send_notification)
+    public void onSendNotification(View view) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
+        Notification notification = builder.setLargeIcon(null)
+                .setWhen(0)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("测试通知")
+                .setContentIntent(PendingIntent.getActivity(getContext(), 1000, new Intent(getContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))
+                .build();
+        notification.sound=Uri.parse("android.resource://" + getContext().getPackageName() + "/" +R.raw.test_music);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+        notificationManager.notify(100, notification);
+
     }
 }

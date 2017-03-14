@@ -26,6 +26,11 @@
         android:layout_height="wrap_content"
         android:text="查询小米神隐模式数据"/>
     <Button
+        android:id="@+id/send_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送notification"/>
+    <Button
         android:id="@+id/query_huawei"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

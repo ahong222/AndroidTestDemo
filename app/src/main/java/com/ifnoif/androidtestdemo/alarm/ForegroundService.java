@@ -26,17 +26,6 @@ public class ForegroundService extends Service {
     public void onCreate() {
         super.onCreate();
 
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-//                .setDefaults(Notification.DEFAULT_LIGHTS)
-//                .setLargeIcon(iconBitmap)
-//                .setSmallIcon(R.drawable.ic_shop)
-//                .setAutoCancel(true)
-//                .setWhen(System.currentTimeMillis())
-//                .setContentTitle(title)
-//                .setContentText(messgage)
-//                .setContentIntent(PendingIntent.getActivity(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT));
-//        return builder;
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         Notification notification = builder.setLargeIcon(null)
                 .setWhen(0)
