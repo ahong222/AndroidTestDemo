@@ -25,11 +25,15 @@ public class DBInfo extends RealmObject {
      * 版本
      * 1:add String v1；
      * 2:add String v2， remove v1
-     *
-     *
      */
     public String v1 = "v1";
     public String v2 = "v2";
     public String v3 = "v3";
     public String v6 = "v6";
+
+
+    @Override
+    public String toString() {
+        return "id:" + id + " name:" + name + " count:" + count;
+    }
 }

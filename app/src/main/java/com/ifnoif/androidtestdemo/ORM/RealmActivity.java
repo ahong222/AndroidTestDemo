@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -51,6 +53,23 @@ public class RealmActivity extends BaseActivity {
     View mAddView;
 
     List<DBInfo> mDataList = new ArrayList<DBInfo>();
+    private RecyclerView.Adapter<ViewHolder> mAdapter = new RecyclerView.Adapter<ViewHolder>() {
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.db_item_layout, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.onBind(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mDataList.size();
+        }
+    };
     private View.OnClickListener mUpdateListener = new View.OnClickListener() {
 
         @Override
@@ -115,28 +134,24 @@ public class RealmActivity extends BaseActivity {
             }
         }
     };
-    private RecyclerView.Adapter<ViewHolder> mAdapter = new RecyclerView.Adapter<ViewHolder>() {
+    private Handler mHandler = new Handler() {
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.db_item_layout, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.onBind(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mDataList.size();
+        public void handleMessage(Message msg) {
+            if (msg.obj instanceof ArrayList) {
+                List<DBInfo> result = (List<DBInfo>) msg.obj;
+                if (result != null) {
+                    mDataList.clear();
+                    mDataList.addAll(result);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
         }
     };
 
     public static void initRealm(Context context) {
+        long time = System.currentTimeMillis();
 //        byte[] key = new byte[64];
 //        new SecureRandom().nextBytes(key);
-        Realm.init(context);
         //如果没有修改字段，可以升级版本
         MyMigration migration = new MyMigration(6) {
             @Override
@@ -179,10 +194,14 @@ public class RealmActivity extends BaseActivity {
         } catch (RealmMigrationNeededException e) {
             Realm.deleteRealm(config);//增加字段，没有升级版本号，或者升级版本号了没有修改字段
             e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (Exception e) {
             Realm.deleteRealm(config);
             e.printStackTrace();//从高版本降级抛出的异常
+            throw new RuntimeException(e);
         }
+
+        Log.d(TAG, "init time:" + (System.currentTimeMillis() - time));
 
     }
 
@@ -193,14 +212,15 @@ public class RealmActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         initView();
+        initRealm(RealmActivity.this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        initData();
+        initData();
 
-        initDataByRx();
+//        initDataByRx();
     }
 
     private void initView() {
@@ -221,6 +241,8 @@ public class RealmActivity extends BaseActivity {
                 mDataList.add(dbInfo);
                 mAdapter.notifyItemInserted(mDataList.size() - 1);
                 addDBInfoToDB(dbInfo);
+
+                dumpDBLog();
             }
         });
 
@@ -228,21 +250,33 @@ public class RealmActivity extends BaseActivity {
     }
 
     private void initData() {
-        new AsyncTask<Void, Void, List<DBInfo>>() {
-            @Override
-            protected List<DBInfo> doInBackground(Void... params) {
-                return loadDB();
-            }
+//        new AsyncTask<Void, Void, List<DBInfo>>() {
+//            @Override
+//            protected List<DBInfo> doInBackground(Void... params) {
+//                return loadDB();
+//            }
+//
+//            @Override
+//            protected void onPostExecute(List<DBInfo> result) {
+//                if (result != null) {
+//                    mDataList.clear();
+//                    mDataList.addAll(result);
+//                    mAdapter.notifyDataSetChanged();
+//                }
+//            }
+//        }.execute();
 
+        new Thread() {
             @Override
-            protected void onPostExecute(List<DBInfo> result) {
-                if (result != null) {
-                    mDataList.clear();
-                    mDataList.addAll(result);
-                    mAdapter.notifyDataSetChanged();
-                }
+            public void run() {
+                initRealm(RealmActivity.this);
+
+                List<DBInfo> result = loadDB();
+                Message msg = Message.obtain();
+                msg.obj = result;
+                mHandler.sendMessage(msg);
             }
-        }.execute();
+        }.start();
     }
 
     private void initDataByRx() {
@@ -250,6 +284,7 @@ public class RealmActivity extends BaseActivity {
 
             @Override
             public void subscribe(ObservableEmitter<List<DBInfo>> e) throws Exception {
+                initRealm(RealmActivity.this);
                 List<DBInfo> result = loadDB();
                 e.onNext(result);
                 e.onComplete();
@@ -257,7 +292,7 @@ public class RealmActivity extends BaseActivity {
         });
 
         initObservable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<DBInfo>>(){
+                .subscribe(new Observer<List<DBInfo>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
@@ -284,13 +319,11 @@ public class RealmActivity extends BaseActivity {
                 });
     }
 
-    private List<DBInfo> loadDB(){
+    private List<DBInfo> loadDB() {
         long time = System.currentTimeMillis();
-        initRealm(RealmActivity.this);
-        Log.d(TAG, "init db time:" + (System.currentTimeMillis() - time));
 
         List<DBInfo> result = queryAll();
-        Log.d(TAG, "queryAll time:" + (System.currentTimeMillis() - time));
+        Log.d(TAG, "queryAll time:" + (System.currentTimeMillis() - time) + " size:" + (result == null ? 0 : result.size()));
 
         return Realm.getDefaultInstance().copyFromRealm(result);
     }
@@ -310,6 +343,8 @@ public class RealmActivity extends BaseActivity {
         realm.commitTransaction();
 
         Log.d(TAG, "delete time:" + (System.currentTimeMillis() - time));
+
+        dumpDBLog();
     }
 
     private void addDBInfoToDB(DBInfo dbInfo) {
@@ -317,12 +352,14 @@ public class RealmActivity extends BaseActivity {
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
-        DBInfo info = realm.createObject(DBInfo.class);
-        info.id = dbInfo.id;
-        info.name = dbInfo.name;
+        realm.insert(dbInfo);
+//        DBInfo info = realm.createObject(DBInfo.class);
+//        info.id = dbInfo.id;
+//        info.name = dbInfo.name;
         realm.commitTransaction();
 
         Log.d(TAG, "add time:" + (System.currentTimeMillis() - time));
+        dumpDBLog();
     }
 
     private List<DBInfo> queryAll() {
@@ -331,6 +368,7 @@ public class RealmActivity extends BaseActivity {
     }
 
     public void destroyRealm() {
+        dumpDBLog();
         Realm.getDefaultInstance().close();
     }
 
@@ -353,6 +391,15 @@ public class RealmActivity extends BaseActivity {
 
             }
         }.start();
+    }
+
+    private void dumpDBLog() {
+        List<DBInfo> list = queryAll();
+        Log.d(TAG, "dumpDBLog totalCount:" + list.size());
+        for (DBInfo dbInfo : list) {
+            Log.d(TAG, "dbInfo:" + dbInfo);
+        }
+        Log.d(TAG, "dumpDBLog end ======");
     }
 
     public static class MyMigration implements RealmMigration {

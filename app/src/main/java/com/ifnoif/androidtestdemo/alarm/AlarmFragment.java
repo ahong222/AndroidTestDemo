@@ -3,7 +3,6 @@ package com.ifnoif.androidtestdemo.alarm;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -54,22 +53,30 @@ import static android.content.Context.MODE_PRIVATE;
 public class AlarmFragment extends BaseFragment {
 
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.alarm_fragment, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
+    IPowerKeeper myService;
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            myService = IPowerKeeper.Stub.asInterface(service);
+            Log.d(TAG, "syh onServiceConnectedname:" + name);
+        }
 
-    @OnClick(R.id.start_alarm)
-    public void onStartAlarm(View v) {
-        startAlarmExact(getContext());
-        startExactAndAllowWhileIdle(getContext());
-//        startAlarmClock(getContext());
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "syh onServiceDisconnected name:" + name);
+        }
+    };
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.d("syh", "onServiceConnected");
+        }
 
-        Toast.makeText(getContext(), "已启动Alarm", Toast.LENGTH_SHORT).show();
-    }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d("syh", "onServiceDisconnected");
+        }
+    };
 
     public static void startAlarmExact(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -78,7 +85,6 @@ public class AlarmFragment extends BaseFragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 60000, pendingIntent);
     }
-
 
     public static void startExactAndAllowWhileIdle(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -114,6 +120,22 @@ public class AlarmFragment extends BaseFragment {
 
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.alarm_fragment, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @OnClick(R.id.start_alarm)
+    public void onStartAlarm(View v) {
+        startAlarmExact(getContext());
+        startExactAndAllowWhileIdle(getContext());
+//        startAlarmClock(getContext());
+
+        Toast.makeText(getContext(), "已启动Alarm", Toast.LENGTH_SHORT).show();
+    }
 
     @OnClick(R.id.start_service)
     public void onStartService(View view) {
@@ -233,7 +255,7 @@ public class AlarmFragment extends BaseFragment {
             localBundle.putString("userConfigureStatus", getContext().getPackageName());
             localBundle.putString("App", getContext().getPackageName());
             localBundle.putString("AppConfigure", "no_restrict");//miui_auto,restrict_bg,no_bg
-            localBundle.putInt("UserId",getContext().getApplicationInfo().uid);
+            localBundle.putInt("UserId", getContext().getApplicationInfo().uid);
 
             try {
                 int result = myService.setPowerSaveAppConfigure(localBundle);
@@ -242,13 +264,13 @@ public class AlarmFragment extends BaseFragment {
 
                 Bundle newLocalBundle = new Bundle();
                 newLocalBundle.putString("App", getContext().getPackageName());
-                newLocalBundle.putInt("UserId",getContext().getApplicationInfo().uid);
+                newLocalBundle.putInt("UserId", getContext().getApplicationInfo().uid);
                 Bundle resultBundle = new Bundle();
                 try {
                     int code = this.myService.getPowerSaveAppConfigure(newLocalBundle, resultBundle);
                     if (code == 0) {
                         String res = resultBundle.getString("AppConfigure");
-                        Log.d(TAG, "getPowerSaveAppConfigure result:" + res );
+                        Log.d(TAG, "getPowerSaveAppConfigure result:" + res);
                     } else {
                         Log.d(TAG, "getPowerSaveAppConfigure code:" + code);
                     }
@@ -293,22 +315,8 @@ public class AlarmFragment extends BaseFragment {
         getContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    IPowerKeeper myService;
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myService = IPowerKeeper.Stub.asInterface(service);
-            Log.d(TAG, "syh onServiceConnectedname:" + name);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "syh onServiceDisconnected name:" + name);
-        }
-    };
-
     @OnClick(R.id.query_huawei)
-    public void queryHuawei(View view){
+    public void queryHuawei(View view) {
         new Thread() {
             @Override
             public void run() {
@@ -337,10 +345,29 @@ public class AlarmFragment extends BaseFragment {
                 .setContentTitle("测试通知")
                 .setContentIntent(PendingIntent.getActivity(getContext(), 1000, new Intent(getContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
-        notification.sound=Uri.parse("android.resource://" + getContext().getPackageName() + "/" +R.raw.test_music);
+        notification.sound = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.test_music);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
         notificationManager.notify(100, notification);
 
+    }
+
+    @OnClick(R.id.start_bind_service)
+    public void onStartBindService(View view) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(getContext().getPackageName(),BindTestService.class.getName()));
+        getContext().startService(intent);
+    }
+
+    @OnClick(R.id.bind_service)
+    public void onBindService(View view) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(getContext().getPackageName(),BindTestService.class.getName()));
+        getContext().bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @OnClick(R.id.unbind_service)
+    public void onUnBindService(View view) {
+        getContext().unbindService(mServiceConnection);
     }
 }

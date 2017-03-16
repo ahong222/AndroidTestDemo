@@ -35,4 +35,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="查询华为白名单"/>
+
+    <Button
+        android:id="@+id/start_bind_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start service test"/>
+    <Button
+        android:id="@+id/bind_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="bind test"/>
+    <Button
+        android:id="@+id/unbind_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="unbind test"/>
 </LinearLayout>

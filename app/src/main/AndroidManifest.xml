@@ -97,6 +97,8 @@
 
         </service>
 
+        <service android:name=".alarm.BindTestService" />
+
     </application>
 
 </manifest>
