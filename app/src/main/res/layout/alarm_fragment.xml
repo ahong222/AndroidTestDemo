@@ -11,6 +11,11 @@
         android:text="启动闹钟"/>
 
     <Button
+        android:id="@+id/stop_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="停止闹钟"/>
+    <Button
         android:id="@+id/start_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,4 +56,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="unbind test"/>
+    <Button
+        android:id="@+id/show_alert_window"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="显示悬浮窗"/>
+    <Button
+        android:id="@+id/listen_screen_off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="监听锁屏"/>
 </LinearLayout>

@@ -4,19 +4,27 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -27,6 +35,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
@@ -43,6 +53,9 @@ import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,6 +65,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AlarmFragment extends BaseFragment {
 
+    private static AlarmFragment instance;
 
     IPowerKeeper myService;
     ServiceConnection serviceConnection = new ServiceConnection() {
@@ -84,6 +98,19 @@ public class AlarmFragment extends BaseFragment {
         intent.putExtra("type", 0);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 60000, pendingIntent);
+
+        checkNetWork(context);
+        wakeScreen(context);
+    }
+
+    public static void stopAlarmExact(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent("com.syh.action.alarm");
+        intent.putExtra("type", 10);
+        intent.putExtra("newExtra", 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.cancel(pendingIntent);
     }
 
     public static void startExactAndAllowWhileIdle(Context context) {
@@ -125,16 +152,22 @@ public class AlarmFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.alarm_fragment, container, false);
         ButterKnife.bind(this, view);
+        instance = this;
         return view;
     }
 
     @OnClick(R.id.start_alarm)
     public void onStartAlarm(View v) {
-        startAlarmExact(getContext());
-        startExactAndAllowWhileIdle(getContext());
+        startAlarmExact(getActivity());
+//        startExactAndAllowWhileIdle(getContext());
 //        startAlarmClock(getContext());
 
         Toast.makeText(getContext(), "已启动Alarm", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.stop_alarm)
+    public void onStopAlarm(View v) {
+        stopAlarmExact(getContext());
     }
 
     @OnClick(R.id.start_service)
@@ -355,14 +388,14 @@ public class AlarmFragment extends BaseFragment {
     @OnClick(R.id.start_bind_service)
     public void onStartBindService(View view) {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(getContext().getPackageName(),BindTestService.class.getName()));
+        intent.setComponent(new ComponentName(getContext().getPackageName(), BindTestService.class.getName()));
         getContext().startService(intent);
     }
 
     @OnClick(R.id.bind_service)
     public void onBindService(View view) {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(getContext().getPackageName(),BindTestService.class.getName()));
+        intent.setComponent(new ComponentName(getContext().getPackageName(), BindTestService.class.getName()));
         getContext().bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -370,4 +403,113 @@ public class AlarmFragment extends BaseFragment {
     public void onUnBindService(View view) {
         getContext().unbindService(mServiceConnection);
     }
+
+    @OnClick(R.id.show_alert_window)
+    public void onShowAlertWindow(View view) {
+//        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW}, 100);
+//            return;
+//        }
+        WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Button button = new Button(getContext());
+        button.setText("test");
+        button.setTextColor(Color.BLACK);
+        button.setBackgroundColor(Color.RED);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WindowManager tmpWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+                tmpWindowManager.removeView(v);
+            }
+        });
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(50, 30);
+        layoutParams.width = 100;
+        layoutParams.height = 60;
+        layoutParams.format = PixelFormat.RGBA_8888;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;//
+
+        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        windowManager.addView(button, layoutParams);
+    }
+
+    private static void checkNetWork(Context context) {
+        boolean isConnected = isConnected(context);
+        if (isConnected) {
+            String url = "https://api.weibo.com/2/statuses/public_timeline.json";
+            new AsyncTask<String, Void, String>() {
+
+                @Override
+                protected String doInBackground(String... params) {
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url(params[0])
+                            .build();
+
+                    Response response = null;
+                    try {
+                        response = client.newCall(request).execute();
+                        return response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    Log.d("syh", "checkNetWork ok:" + (result != null));
+                }
+            }.execute(url);
+        } else {
+            Log.d("syh", "checkNetWork is not connected");
+        }
+
+    }
+
+    public static boolean isConnected(Context context) {
+        try {
+            ConnectivityManager manager = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkinfo = manager.getActiveNetworkInfo();
+            boolean isConnected = networkinfo.isConnected();
+            return isConnected;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    private static PowerManager.WakeLock wakeLock;
+
+    private static void wakeScreen(Context context) {
+        if (wakeLock == null) {
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "Tag");
+        }
+        if (!wakeLock.isHeld()) {
+            Log.d("syh", "wakeScreen");
+            wakeLock.acquire();
+        } else {
+            wakeLock.release();
+            wakeLock.acquire();
+            Log.d("syh", "wakeLock isHeld");
+        }
+
+//        if (instance != null) {
+//            Log.d("syh", "add FLAG_KEEP_SCREEN_ON");
+//            instance.getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        }
+    }
+
+
+    @OnClick(R.id.listen_screen_off)
+    public void onListenScreenOff(View view) {
+        BroadcastReceiver broadcastReceiver = new ScreenOffBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        getContext().registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+
 }

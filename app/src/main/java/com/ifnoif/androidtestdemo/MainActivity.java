@@ -1,5 +1,6 @@
 package com.ifnoif.androidtestdemo;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -10,6 +11,7 @@ import android.media.session.MediaController;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,7 @@ import com.ifnoif.androidtestdemo.alarm.AlarmFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
 import com.ifnoif.androidtestdemo.intent_test.IntentFragment;
 import com.ifnoif.androidtestdemo.intent_test.PushService;
+import com.ifnoif.androidtestdemo.okhttp.OkHttpFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.share_transation.MainShare;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         initListData();
         initListView();
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW}, 100);
     }
 
     private void initListData() {
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("Intent Test", IntentFragment.class));
         mTestList.add(new ItemData("Alarm Test", AlarmFragment.class));
         mTestList.add(new ItemData("账户测试", AccountMainActivity.class));
+        mTestList.add(new ItemData("OkHttp", OkHttpFragment.class));
     }
 
     private void initListView() {
