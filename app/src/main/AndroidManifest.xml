@@ -7,24 +7,23 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="miui.permission.powerkeeper.HIDDEN_MODE_PROVIDER"/>
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="miui.permission.powerkeeper.HIDDEN_MODE_PROVIDER" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-
-    <!--<uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />-->
+    <!-- <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" /> -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
 
+    <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
         android:persistent="true"
-        android:name=".MyApplication">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,35 +35,39 @@
         <activity android:name=".share_transation.TargetShare" />
         <activity android:name=".ORM.RealmActivity" />
         <activity android:name=".account.AccountMainActivity" />
-        <service android:name=".ORM.RealmTestService" android:process=":p1" />
 
+        <service
+            android:name=".ORM.RealmTestService"
+            android:process=":p1" />
         <service android:name=".intent_test.TaskService" />
         <service
             android:name=".intent_test.MyJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".intent_test.PushService"
-            android:process=":my_push"/>
+            android:process=":my_push" />
+
         <receiver android:name=".alarm.AlarmBroadcastReceiver">
             <intent-filter>
-                <action android:name="com.syh.action.alarm"/>
+                <action android:name="com.syh.action.alarm" />
             </intent-filter>
         </receiver>
         <receiver android:name=".alarm.AlarmIdleBroadcastReceiver">
             <intent-filter>
-                <action android:name="com.syh.action.idlealarm"/>
+                <action android:name="com.syh.action.idlealarm" />
             </intent-filter>
         </receiver>
         <receiver android:name=".alarm.AlarmClockBroadcastReceiver">
             <intent-filter>
-                <action android:name="com.syh.action.alarmclock"/>
+                <action android:name="com.syh.action.alarmclock" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".alarm.ForegroundService"
-            android:process=":foreground_service"/>
+        <service
+            android:name=".alarm.ForegroundService"
+            android:process=":foreground_service" />
 
-        <!-- 账户-->
+        <!-- 账户 -->
         <service
             android:name=".account.AuthenticatorService"
             android:enabled="true"
@@ -92,21 +95,41 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
-
         </service>
-
         <service android:name=".alarm.BindTestService" />
 
         <receiver android:name=".alarm.ScreenOffBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.SCREEN_OFF"/>
+                <action android:name="android.intent.action.SCREEN_OFF" />
                 <action android:name="android.intent.action.SCREEN_ON" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".access_bility.AccessOtherAppService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+        </service>
+
+        <activity android:name=".kotlin.KotlinActivity" />
+        <activity android:name=".KotlinTestActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
