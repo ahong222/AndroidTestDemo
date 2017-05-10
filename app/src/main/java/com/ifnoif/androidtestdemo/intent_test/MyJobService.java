@@ -22,7 +22,7 @@ public class MyJobService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.d("service", "onStopJob");
-        return true;
+        return false;
     }
 
 

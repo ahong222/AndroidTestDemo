@@ -18,6 +18,9 @@ buildscript {
     }
 
 
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8' // butterknife注解释添加这行，否则报空指针
+    }
 }
 
 allprojects {

@@ -18,6 +18,8 @@ android {
         jackOptions {
             enabled true
         }
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -34,6 +36,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    // Required for instrumented tests
+    androidTestCompile 'com.android.support:support-annotations:25.1.1'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+
     compile('com.android.support:appcompat-v7:23.1.1') {
         exclude module: 'support-v4'
     }
@@ -48,7 +54,9 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 //    apt 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.mcxiaoke.volley:library:1.0.19'
-    compile 'com.android.support:support-v4:25.1.1'
+    compile ('com.android.support:support-v4:25.1.1'){
+        exclude module: 'support-annotations'
+    }
     //rxjava
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     // Because RxAndroid releases are few and far between, it is recommended you also

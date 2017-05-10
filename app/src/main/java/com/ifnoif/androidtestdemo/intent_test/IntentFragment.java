@@ -36,12 +36,17 @@ public class IntentFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.intent_test_layout, container, false);
         ButterKnife.bind(this, view);
 
-        init();
+        init(view);
         return view;
     }
 
-    private void init() {
-
+    private void init(View view) {
+        view.findViewById(R.id.job_service).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setJobService();
+            }
+        });
     }
 
     @OnClick(R.id.start_service)
@@ -74,9 +79,9 @@ public class IntentFragment extends BaseFragment {
         Log.d(TAG, "setJobService");
 
         JobInfo.Builder builder = new JobInfo.Builder(100, new ComponentName(getContext(), MyJobService.class));
-        builder.setPeriodic(2 * 60 * 1000);
+        builder.setPeriodic(10 * 1000);
         builder.setPersisted(true);
-        builder.setRequiresDeviceIdle(true);
+//        builder.setRequiresDeviceIdle(true);
 
 
         JobScheduler jobScheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);

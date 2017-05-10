@@ -125,11 +125,22 @@
         </service>
 
         <activity android:name=".kotlin.KotlinActivity" />
-        <activity android:name=".KotlinTestActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".game2048.GameActivity" />
+        <activity android:name=".jobservice_crash.MyActivity" />
+
+
+        <service android:name=".jobservice_crash.MyTaskService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            />
+
     </application>
 
 </manifest>
