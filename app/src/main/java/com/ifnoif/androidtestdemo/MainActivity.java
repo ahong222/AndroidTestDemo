@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("Kotlin Fragment", KotlinFragment.class));
         mTestList.add(new ItemData("JobService Crash", MyActivity.class));
         mTestList.add(new ItemData("Music Test", MusicFragment.class));
+        mTestList.add(new ItemData("内存映射测试", MMapFragment.class));
 
 
     }
