@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.ifnoif.androidtestdemo.ORM.MyRealmLog;
 import com.ifnoif.androidtestdemo.ORM.RealmActivity;
 import com.ifnoif.androidtestdemo.access_bility.AccessBilityFragment;
 import com.ifnoif.androidtestdemo.account.AccountMainActivity;
@@ -39,6 +41,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import io.realm.Realm;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -184,70 +188,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //以下会输出两遍 "Hello, world"
-    public static class Hello {
-
-        Runnable r1 = () -> {
-            System.out.println(this);
-        };
-        Runnable r2 = () -> {
-            System.out.println(toString());
-        };
-
-        public static void main(String... args) {
-            new Hello().r1.run();
-            new Hello().r2.run();
-        }
-
-        public static void sort(Hello[] list) {
-            Comparator<Hello> byName = new Comparator<Hello>() {
-                @Override
-                public int compare(Hello lhs, Hello rhs) {
-                    return lhs.getName().compareTo(rhs.getName());
-                }
-            };
-
-            Comparator<Hello> byName2 = (Hello lhs, Hello rhs) -> lhs.getName().compareTo(rhs.getName());
-            Comparator<Hello> byName3 = (Hello lhs, Hello rhs) -> lhs.getName().compareTo(rhs.getName());
-
-//        Comparator<Hello> byName4 = Comparator.comp(Hello::getName);
-
-            Comparator<Hello> byName4 = (Hello x, Hello y) -> {
-                return x.getName().compareTo(y.getName());
-            };
-
-            List<Hello> list1 = null;
-            Collections.sort(list1, byName4);
-
-//            byName4 = Comparator.comparing((Hello p) -> p.getName());
-            Collections.sort(list1, byName4);
-
-            //Comparator.compare(p -> p.getName());
-            Arrays.sort(list, byName2);
-        }
-
-        public String toString() {
-            return "Hello, world";
-        }
-
-        public String getName() {
-            return "";
-        }
-
-        interface Iterator<E> {
-            boolean hasNext();
-
-            E next();
-
-            void remove();
-
-//            default void skip(int i) {
-//                for (; i > 0 && hasNext(); i -= 1) next();
-//            }
-        }
-
-    }
-
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTitle;
 
@@ -282,4 +222,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public static void  initRealm(boolean deleteAll){
+        long count = Realm.getDefaultInstance().where(MyRealmLog.class).count();
+        Log.d("test","initRealm count:"+count);
+
+        if(deleteAll) {
+        Realm.getDefaultInstance().beginTransaction();
+        Realm.getDefaultInstance().delete(MyRealmLog.class);
+        Realm.getDefaultInstance().commitTransaction();
+        }
+    }
 }

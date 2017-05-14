@@ -18,23 +18,17 @@ import com.ifnoif.androidtestdemo.R;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by shen on 17/2/26.
  */
 
 public class IntentFragment extends BaseFragment {
-    @BindView(R.id.start_service)
     public View startService;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.intent_test_layout, container, false);
-        ButterKnife.bind(this, view);
 
         init(view);
         return view;
@@ -49,7 +43,6 @@ public class IntentFragment extends BaseFragment {
         });
     }
 
-    @OnClick(R.id.start_service)
     public void startTask(View view) {
         new Thread() {
             @Override
@@ -74,7 +67,6 @@ public class IntentFragment extends BaseFragment {
 
     }
 
-    @OnClick(R.id.job_service)
     public void setJobService() {
         Log.d(TAG, "setJobService");
 

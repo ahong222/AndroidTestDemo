@@ -2,7 +2,6 @@ package com.ifnoif.androidtestdemo.ORM;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,9 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -47,29 +43,10 @@ public class RealmActivity extends BaseActivity {
     private static final String TAG = "RealmActivity";
     private static int index = 0;
 
-    @BindView(R.id.recycle_view)
     RecyclerView mRecycleView;
-    @BindView(R.id.add)
     View mAddView;
 
     List<DBInfo> mDataList = new ArrayList<DBInfo>();
-    private RecyclerView.Adapter<ViewHolder> mAdapter = new RecyclerView.Adapter<ViewHolder>() {
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.db_item_layout, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.onBind(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mDataList.size();
-        }
-    };
     private View.OnClickListener mUpdateListener = new View.OnClickListener() {
 
         @Override
@@ -134,6 +111,23 @@ public class RealmActivity extends BaseActivity {
             }
         }
     };
+    private RecyclerView.Adapter<ViewHolder> mAdapter = new RecyclerView.Adapter<ViewHolder>() {
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.db_item_layout, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.onBind(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mDataList.size();
+        }
+    };
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -150,9 +144,14 @@ public class RealmActivity extends BaseActivity {
 
     public static void initRealm(Context context) {
         long time = System.currentTimeMillis();
-//        byte[] key = new byte[64];
-//        new SecureRandom().nextBytes(key);
-        //如果没有修改字段，可以升级版本
+
+        initRealm();
+
+        Log.d(TAG, "init time:" + (System.currentTimeMillis() - time));
+
+    }
+
+    public static void initRealm() {
         MyMigration migration = new MyMigration(6) {
             @Override
             public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
@@ -177,10 +176,6 @@ public class RealmActivity extends BaseActivity {
                 return super.equals(o);
             }
         };
-        /**
-         * 版本记录
-         * 3:增加了column_v3
-         */
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("realmdb.realm") //文件名
                 .schemaVersion(migration.getVersion()) //版本号
@@ -200,16 +195,13 @@ public class RealmActivity extends BaseActivity {
             e.printStackTrace();//从高版本降级抛出的异常
             throw new RuntimeException(e);
         }
-
-        Log.d(TAG, "init time:" + (System.currentTimeMillis() - time));
-
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.realm_fragment);
-        ButterKnife.bind(this);
+
 
         initView();
         initRealm(RealmActivity.this);
@@ -224,6 +216,15 @@ public class RealmActivity extends BaseActivity {
     }
 
     private void initView() {
+        mRecycleView = (RecyclerView) findViewById(R.id.recycle_view);
+        mAddView = findViewById(R.id.add);
+        findViewById(R.id.another_process).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickAnotherProcess(v);
+            }
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecycleView.setLayoutManager(layoutManager);
@@ -378,7 +379,6 @@ public class RealmActivity extends BaseActivity {
         destroyRealm();
     }
 
-    @OnClick(R.id.another_process)
     public void onClickAnotherProcess(View view) {
         Intent intent = new Intent(this, RealmTestService.class);
         startService(intent);

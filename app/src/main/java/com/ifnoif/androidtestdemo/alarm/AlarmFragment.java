@@ -51,8 +51,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -151,12 +149,10 @@ public class AlarmFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.alarm_fragment, container, false);
-        ButterKnife.bind(this, view);
         instance = this;
         return view;
     }
 
-    @OnClick(R.id.start_alarm)
     public void onStartAlarm(View v) {
         startAlarmExact(getActivity());
 //        startExactAndAllowWhileIdle(getContext());
@@ -165,18 +161,15 @@ public class AlarmFragment extends BaseFragment {
         Toast.makeText(getContext(), "已启动Alarm", Toast.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.stop_alarm)
     public void onStopAlarm(View v) {
         stopAlarmExact(getContext());
     }
 
-    @OnClick(R.id.start_service)
     public void onStartService(View view) {
         Intent intent = new Intent(getContext(), ForegroundService.class);
         getContext().startService(intent);
     }
 
-    @OnClick(R.id.test_huawei)
     public void startTestHuawei(View view) {
         ifHuaweiAlert();
     }
@@ -277,7 +270,7 @@ public class AlarmFragment extends BaseFragment {
         }
     }
 
-    @OnClick(R.id.query_xiaomi)
+//    @OnClick(R.id.query_xiaomi)
     public void queryXiaomi() {
         if (myService == null) {
             bindXiaoMi();
@@ -348,7 +341,7 @@ public class AlarmFragment extends BaseFragment {
         getContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    @OnClick(R.id.query_huawei)
+//    @OnClick(R.id.query_huawei)
     public void queryHuawei(View view) {
         new Thread() {
             @Override
@@ -369,7 +362,7 @@ public class AlarmFragment extends BaseFragment {
         }.start();
     }
 
-    @OnClick(R.id.send_notification)
+//    @OnClick(R.id.send_notification)
     public void onSendNotification(View view) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
         Notification notification = builder.setLargeIcon(null)
@@ -385,26 +378,26 @@ public class AlarmFragment extends BaseFragment {
 
     }
 
-    @OnClick(R.id.start_bind_service)
+//    @OnClick(R.id.start_bind_service)
     public void onStartBindService(View view) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(getContext().getPackageName(), BindTestService.class.getName()));
         getContext().startService(intent);
     }
 
-    @OnClick(R.id.bind_service)
+//    @OnClick(R.id.bind_service)
     public void onBindService(View view) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(getContext().getPackageName(), BindTestService.class.getName()));
         getContext().bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    @OnClick(R.id.unbind_service)
+//    @OnClick(R.id.unbind_service)
     public void onUnBindService(View view) {
         getContext().unbindService(mServiceConnection);
     }
 
-    @OnClick(R.id.show_alert_window)
+//    @OnClick(R.id.show_alert_window)
     public void onShowAlertWindow(View view) {
 //        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
 //            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW}, 100);
@@ -502,7 +495,7 @@ public class AlarmFragment extends BaseFragment {
     }
 
 
-    @OnClick(R.id.listen_screen_off)
+//    @OnClick(R.id.listen_screen_off)
     public void onListenScreenOff(View view) {
         BroadcastReceiver broadcastReceiver = new ScreenOffBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter();

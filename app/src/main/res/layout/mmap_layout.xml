@@ -29,8 +29,20 @@
         android:layout_height="wrap_content"
         android:text="普通IO写文件" />
 
+    <Button
+        android:id="@+id/realmWriter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="写入realm" />
+
+    <Button
+        android:id="@+id/sqliteWriter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="写入Sqlite" />
+
     <TextView
-        android:id="@+id/result"
+        android:id="@+id/resultLog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

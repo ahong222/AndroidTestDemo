@@ -16,8 +16,6 @@ import android.view.ViewGroup;
 import com.ifnoif.androidtestdemo.BaseFragment;
 import com.ifnoif.androidtestdemo.R;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by shen on 17/3/27.
@@ -29,11 +27,9 @@ public class AccessBilityFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.access_bility_fragment, container, false);
-        ButterKnife.bind(this, view);
         return view;
     }
 
-    @OnClick(R.id.show_guide)
     public void showGuide(View v) {
         showBatteryGuide();
     }

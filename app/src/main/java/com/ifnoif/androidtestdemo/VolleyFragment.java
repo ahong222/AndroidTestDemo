@@ -14,9 +14,6 @@ import android.widget.ImageView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by apple on 17-2-20.
@@ -24,13 +21,13 @@ import butterknife.OnClick;
 
 public class VolleyFragment extends BaseFragment {
 
-    @BindView(R.id.image_view)
+//    @BindView(R.id.image_view)
     ImageView mImageView;
 
-    @BindView(R.id.load)
+//    @BindView(R.id.load)
     Button mLoad;
 
-    @BindView(R.id.load2)
+//    @BindView(R.id.load2)
     Button mLoad2;
 
     private String url = "http://bpic.588ku.com/element_origin_pic/16/08/22/07e5f03085b48eebb42c24fb090fc258.png?_upd=true";
@@ -40,7 +37,7 @@ public class VolleyFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.volley_layout, container, false);
 
-        ButterKnife.bind(this, view);
+//        ButterKnife.bind(this, view);
         mImageView = (ImageView)view.findViewById(R.id.image_view);
         mLoad = (Button)view.findViewById(R.id.load);
         mLoad2 = (Button)view.findViewById(R.id.load2);
@@ -66,7 +63,7 @@ public class VolleyFragment extends BaseFragment {
         });
     }
 
-    @OnClick(R.id.load)
+//    @OnClick(R.id.load)
     public void clickLoad(View view) {
         ImageLoader imageLoader = VolleyManager.getInstance().getImageLoader();
         imageLoader.get(url, new ImageLoader.ImageListener() {
@@ -85,7 +82,7 @@ public class VolleyFragment extends BaseFragment {
         }, 0, 0, ImageView.ScaleType.CENTER);
     }
 
-    @OnClick(R.id.load2)
+//    @OnClick(R.id.load2)
     public void clickLoad2(View view) {
         ImageLoader imageLoader = VolleyManager.getInstance().getImageLoader();
 

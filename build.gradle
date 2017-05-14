@@ -6,21 +6,16 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.1'
 
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
-
-        classpath "io.realm:realm-gradle-plugin:2.0.2"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+//        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//
+//        classpath "io.realm:realm-gradle-plugin:3.1.4"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 
-
-    dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8' // butterknife注解释添加这行，否则报空指针
-    }
 }
 
 allprojects {

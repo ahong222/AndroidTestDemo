@@ -13,9 +13,6 @@ import com.ifnoif.androidtestdemo.R;
 
 import java.io.IOException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -26,23 +23,19 @@ import okhttp3.internal.Internal;
  */
 
 public class OkHttpFragment extends BaseFragment {
-    @BindView(R.id.url)
     EditText mUrl;
 
-    @BindView(R.id.result)
     EditText mResult;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.okhttp_fragment, container, false);
-        ButterKnife.bind(this, view);
 
         mUrl.setText("https://api.weibo.com/2/statuses/public_timeline.json");
         return view;
     }
 
-    @OnClick(R.id.go)
     public void onRequestTest(View view) {
         String url = mUrl.getText().toString();
         new AsyncTask<String, Void, String>() {
