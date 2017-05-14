@@ -221,15 +221,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public static void  initRealm(boolean deleteAll){
-        long count = Realm.getDefaultInstance().where(MyRealmLog.class).count();
-        Log.d("test","initRealm count:"+count);
-
-        if(deleteAll) {
-        Realm.getDefaultInstance().beginTransaction();
-        Realm.getDefaultInstance().delete(MyRealmLog.class);
-        Realm.getDefaultInstance().commitTransaction();
-        }
-    }
 }

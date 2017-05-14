@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.ifnoif.androidtestdemo.ORM.MyRealmLog
 import com.ifnoif.androidtestdemo.sqlite.SqliteManager
 import io.realm.Realm
+import io.realm.RealmResults
 import kotlinx.android.synthetic.main.mmap_layout.view.*
 import java.io.*
 import java.nio.channels.FileChannel
@@ -27,6 +28,12 @@ class MMapFragment : BaseFragment {
     var writeLog = false
     var writeLogCount = 1000
 
+    var count = 0
+    var byteBuffer = ByteArray(DEFAULT_BUFFER_SIZE)
+
+    lateinit var realmLogList: RealmResults<MyRealmLog>
+
+
     constructor() {
 
     }
@@ -36,7 +43,9 @@ class MMapFragment : BaseFragment {
         init(view)
         initRealm()
 
-        Log.d("test", "log count:" + SqliteManager.getInstance().queryLogCount())
+        var time = System.currentTimeMillis();
+        var logList = SqliteManager.getInstance().queryLogCount()
+        Log.d("test", "log count:" + logList.size + " time:" + (System.currentTimeMillis() - time))
 //        SqliteManager.getInstance().deleteAllLog()
         return view;
     }
@@ -212,6 +221,7 @@ class MMapFragment : BaseFragment {
                 realm.beginTransaction()
                 realm.insert(realmLog)
                 realm.commitTransaction()
+
             }
 
         } else {
@@ -253,9 +263,17 @@ class MMapFragment : BaseFragment {
     }
 
     fun initRealm() {
-        MainActivity.initRealm(false);
+        var time = System.currentTimeMillis();
+        realmLogList = Realm.getDefaultInstance().where(MyRealmLog::class.java).findAll()
+        Log.d("test", "initRealm count:" + realmLogList.size + " time:" + (System.currentTimeMillis() - time))
+
+        var deleteAll = false
+        if (deleteAll) {
+            Realm.getDefaultInstance().beginTransaction()
+            Realm.getDefaultInstance().delete(MyRealmLog::class.java)
+            Realm.getDefaultInstance().commitTransaction()
+        }
     }
 
-    var byteBuffer = ByteArray(DEFAULT_BUFFER_SIZE)
-    var count = 0
+
 }

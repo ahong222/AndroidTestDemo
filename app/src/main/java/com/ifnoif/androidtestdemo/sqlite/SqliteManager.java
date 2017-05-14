@@ -5,6 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ifnoif.androidtestdemo.MyApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by shen on 17/5/14.
  */
@@ -31,14 +34,17 @@ public class SqliteManager {
         db.execSQL("VACUUM");//清除未使用空间
     }
 
-    public int queryLogCount() {
-        int result = 0;
+    public List<String> queryLogCount() {
+        List<String> result = new ArrayList<String>();
         Cursor cursor = null;
         try {
-            cursor = db.rawQuery("select count(*) as count from test", null);
+            cursor = db.rawQuery("select * from test", null);
 
             if (cursor != null && cursor.moveToFirst()) {
-                result = cursor.getInt(cursor.getColumnIndex("count"));
+                int index = cursor.getColumnIndex("log");
+                do {
+                    result.add(cursor.getString(index));
+                }while (cursor.moveToNext());
             }
         } catch (Exception e) {
 
