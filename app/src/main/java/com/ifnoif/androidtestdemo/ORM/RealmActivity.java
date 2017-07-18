@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -71,10 +72,10 @@ public class RealmActivity extends BaseActivity {
 //                    managedDBInfo.v1 = dbInfo.v1;
 //                }
 //                realm.commitTransaction();
-
                 realm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
+                        Log.d("syh","syh is mainThread:"+(Thread.currentThread().getId()== Looper.getMainLooper().getThread().getId()));
                         final DBInfo managedDBInfo = realm.where(DBInfo.class).equalTo("id", dbInfo.id).findFirst();
                         if (managedDBInfo != null) {
                             managedDBInfo.count = dbInfo.count;

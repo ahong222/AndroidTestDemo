@@ -32,6 +32,7 @@ import com.ifnoif.androidtestdemo.kotlin.KotlinActivity;
 import com.ifnoif.androidtestdemo.kotlin.KotlinFragment;
 import com.ifnoif.androidtestdemo.music.MusicFragment;
 import com.ifnoif.androidtestdemo.okhttp.OkHttpFragment;
+import com.ifnoif.androidtestdemo.rxjava.RxFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.share_transation.MainShare;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("JobService Crash", MyActivity.class));
         mTestList.add(new ItemData("Music Test", MusicFragment.class));
         mTestList.add(new ItemData("内存映射测试", MMapFragment.class));
+        mTestList.add(new ItemData("RXJava", RxFragment.class));
 
 
     }
@@ -204,6 +206,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+
+            Intent intent = new Intent("android.intent.action.com.sankuai.meituan.meituanwaimaibusiness.remind_advance_order");
+            sendBroadcast(intent);
+
             ItemData itemData = (ItemData) view.getTag();
             if (Fragment.class.isAssignableFrom(itemData.classArg)) {
                 try {

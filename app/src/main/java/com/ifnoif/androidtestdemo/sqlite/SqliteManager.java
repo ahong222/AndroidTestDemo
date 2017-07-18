@@ -34,6 +34,10 @@ public class SqliteManager {
         db.execSQL("VACUUM");//清除未使用空间
     }
 
+    public void doSQL(String sql) {
+        db.execSQL(sql);
+    }
+
     public List<String> queryLogCount() {
         List<String> result = new ArrayList<String>();
         Cursor cursor = null;

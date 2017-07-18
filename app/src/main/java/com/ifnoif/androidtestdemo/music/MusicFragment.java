@@ -40,6 +40,27 @@ public class MusicFragment extends BaseFragment {
             }
         });
 
+        view.findViewById(R.id.pause).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer.pause();
+            }
+        });
+
+        view.findViewById(R.id.stop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer.stop();
+            }
+        });
+
+        view.findViewById(R.id.start).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer.start();
+            }
+        });
+
 
         mediaPlayer = new MediaPlayer();
 
@@ -70,7 +91,7 @@ public class MusicFragment extends BaseFragment {
 
             mediaPlayer.prepareAsync();
         } else {
-
+            mediaPlayer.reset();
             try {
                 mediaPlayer.setDataSource(getContext(), Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.ordersound1));
             } catch (IOException e) {

@@ -59,6 +59,7 @@ class MMapFragment : BaseFragment {
         view.normalWriter.setOnClickListener { writeByNormal() }
         view.realmWriter.setOnClickListener { writeByRealm() }
         view.sqliteWriter.setOnClickListener { writeBySqlite() }
+        view.sqliteThreadTest.setOnClickListener { sqliteThreadTest() }
 
 //        RealmActivity.initRealm()
     }
@@ -275,5 +276,36 @@ class MMapFragment : BaseFragment {
         }
     }
 
+    fun sqliteThreadTest() {
+        Thread() {
+            for (i in 0..20) {
+                Thread() {
+                    for(j in 0..200) {
+                        SqliteManager.getInstance().insertLog("log" + i)
+                        Log.d(TAG, "insert log")
+                        Thread.sleep(20)
+                    }
+
+                }.start()
+            }
+            Thread.sleep(20)
+        }.start()
+
+
+        Thread() {
+            for (i in 0..20) {
+                Thread() {
+                    for(j in 0..200) {
+                        SqliteManager.getInstance().doSQL("update test set log = 'test'")
+                        var list = SqliteManager.getInstance().queryLogCount()
+                        Log.d(TAG, "list count:" + list.size)
+                        Thread.sleep(10)
+                    }
+
+                }.start()
+                Thread.sleep(20)
+            }
+        }.start()
+    }
 
 }

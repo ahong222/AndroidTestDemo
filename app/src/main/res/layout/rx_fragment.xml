@@ -2,35 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#ffffff">
 
     <Button
-        android:id="@+id/play"
+        android:id="@+id/ObservableTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="播放"/>
-
+        android:text="ObservableTest"/>
     <Button
-        android:id="@+id/playTest"
+        android:id="@+id/ConsumerTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Just Play"/>
-
-
+        android:text="ConsumerTest"/>
     <Button
-        android:id="@+id/pause"
+        android:id="@+id/MapTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pause"/>
-
+        android:text="MapTest"/>
     <Button
-        android:id="@+id/stop"
+        android:id="@+id/FlatMapTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"/>
+        android:text="FlatMapTest"/>
     <Button
-        android:id="@+id/start"
+        android:id="@+id/ZipTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start"/>
+        android:text="ZipTest"/>
+    <Button
+        android:id="@+id/FlowableTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FlowableTest"/>
 </LinearLayout>
