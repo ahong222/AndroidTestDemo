@@ -1,5 +1,6 @@
 package com.ifnoif.androidtestdemo.music;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +64,7 @@ public class MusicFragment extends BaseFragment {
 
 
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
 
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override

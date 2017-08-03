@@ -1,69 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/start_alarm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="启动闹钟"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/stop_alarm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="停止闹钟"/>
-    <Button
-        android:id="@+id/start_service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="启动前台服务"/>
-    <Button
-        android:id="@+id/test_huawei"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="华为受保护应用"/>
-    <Button
-        android:id="@+id/query_xiaomi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="查询小米神隐模式数据"/>
-    <Button
-        android:id="@+id/send_notification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="发送notification"/>
-    <Button
-        android:id="@+id/query_huawei"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="查询华为白名单"/>
+        <Button
+            android:id="@+id/start_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="启动闹钟" />
 
-    <Button
-        android:id="@+id/start_bind_service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="start service test"/>
-    <Button
-        android:id="@+id/bind_service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="bind test"/>
-    <Button
-        android:id="@+id/unbind_service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="unbind test"/>
-    <Button
-        android:id="@+id/show_alert_window"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="显示悬浮窗"/>
-    <Button
-        android:id="@+id/listen_screen_off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="监听锁屏"/>
-</LinearLayout>
+        <Button
+            android:id="@+id/stop_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="停止闹钟" />
+
+        <Button
+            android:id="@+id/start_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="启动前台服务" />
+
+        <Button
+            android:id="@+id/test_huawei"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="华为受保护应用" />
+
+        <Button
+            android:id="@+id/query_xiaomi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询小米神隐模式数据" />
+
+        <Button
+            android:id="@+id/send_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送notification" />
+
+        <Button
+            android:id="@+id/query_huawei"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询华为白名单" />
+
+        <Button
+            android:id="@+id/start_bind_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start service test" />
+
+        <Button
+            android:id="@+id/bind_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="bind test" />
+
+        <Button
+            android:id="@+id/unbind_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="unbind test" />
+
+        <Button
+            android:id="@+id/show_alert_window"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="显示悬浮窗" />
+
+        <Button
+            android:id="@+id/listen_screen_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="监听锁屏" />
+
+        <Button
+            android:id="@+id/listen_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置运行查看通知栏" />
+    </LinearLayout>
+</ScrollView>

@@ -35,12 +35,15 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("application", "onCreate hash:" + this.hashCode());
+        String processName = getProcessName(this);
+        Log.d("application", "onCreate hash:" + this.hashCode() + " processName:" + processName);
         sContext = this.getApplicationContext();
 
-        if (getPackageName().equals(getProcessName(this))) {
+        if (getPackageName().equals(processName)) {
             Realm.init(getApplicationContext());
         }
 //        startService(new Intent(this, PushService.class));
     }
+
+
 }

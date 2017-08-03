@@ -138,10 +138,20 @@
         <activity android:name=".jobservice_crash.MyActivity" />
 
 
-        <service android:name=".jobservice_crash.MyTaskService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            />
+        <service
+            android:name=".jobservice_crash.MyTaskService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
+
+        <!--  监听通知保活 -->
+        <service
+            android:name=".keep_alive.NotificationService"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:process=":test">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

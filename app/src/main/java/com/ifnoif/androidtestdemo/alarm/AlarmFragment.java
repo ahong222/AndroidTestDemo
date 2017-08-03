@@ -27,6 +27,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 import com.ifnoif.androidtestdemo.BaseFragment;
 import com.ifnoif.androidtestdemo.MainActivity;
 import com.ifnoif.androidtestdemo.R;
+import com.ifnoif.androidtestdemo.keep_alive.NotificationService;
 import com.miui.powerkeeper.IPowerKeeper;
 
 import java.io.IOException;
@@ -150,6 +152,31 @@ public class AlarmFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.alarm_fragment, container, false);
         instance = this;
+
+        view.findViewById(R.id.listen_notification).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String string = Settings.Secure.getString(getActivity().getContentResolver(),
+                        "enabled_notification_listeners");
+                System.out.println("zyf 已经允许使用通知权的应用:" + string);
+                // 数据库中保存的格式：包名/服务名:包名/服务名，如：
+                // com.example.notification/com.example.notification.NotificationService
+                // :com.example.smartface/com.example.smartface.notification.SmartFaceListenerService
+                if (string == null || !string.contains(NotificationService.class.getName())) {
+                    startActivity(new Intent(
+                            "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                } else {
+                    PackageManager pm = getActivity().getPackageManager();
+                    pm.setComponentEnabledSetting(new ComponentName(getContext(), NotificationService.class),
+                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+                    pm.setComponentEnabledSetting(new ComponentName(getContext(), NotificationService.class),
+                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                }
+
+            }
+        });
+
         return view;
     }
 
