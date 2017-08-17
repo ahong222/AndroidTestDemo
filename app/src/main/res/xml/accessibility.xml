@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+accessibilityEventTypes:该服务对界面中的哪些变化感兴趣.
+see:https://developer.android.com/reference/android/accessibilityservice/AccessibilityServiceInfo.html
+accessibilityFeedbackType:反馈方式,比如是语音播放,还是震动
+canRetrieveWindowContent:能否访问活动窗口中的内容
+notificationTimeout:接受事件的时间间隔,通常将其设置为100
+com.android.settings,com.miui.powerkeeper
+-->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
 
-    android:accessibilityEventTypes="typeNotificationStateChanged|typeWindowStateChanged|typeWindowContentChanged"
+    android:accessibilityEventTypes="typeViewClicked|typeNotificationStateChanged|typeWindowStateChanged|typeWindowContentChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault"
     android:canRetrieveWindowContent="true"
     android:notificationTimeout="100"
-    android:packageNames="com.android.settings" />
+    android:packageNames="com.android.settings,com.miui.powerkeeper" />

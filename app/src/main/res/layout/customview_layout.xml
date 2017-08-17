@@ -14,5 +14,16 @@
     <com.ifnoif.androidtestdemo.customview.MyCustomViewGroup
         android:id="@+id/myviewGroup"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.ifnoif.androidtestdemo.customview.MyCustomViewGroup>
+        android:layout_height="match_parent"
+        android:visibility="gone"></com.ifnoif.androidtestdemo.customview.MyCustomViewGroup>
+
+    <com.ifnoif.androidtestdemo.customview.TestMeasureViewGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.ifnoif.androidtestdemo.customview.TestMeasureTextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00ff00"/>
+    </com.ifnoif.androidtestdemo.customview.TestMeasureViewGroup>
 </LinearLayout>

@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.ifnoif.androidtestdemo.ORM.MyRealmLog;
 import com.ifnoif.androidtestdemo.ORM.RealmActivity;
 import com.ifnoif.androidtestdemo.access_bility.AccessBilityFragment;
 import com.ifnoif.androidtestdemo.account.AccountMainActivity;
@@ -36,14 +34,9 @@ import com.ifnoif.androidtestdemo.rxjava.RxFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.share_transation.MainShare;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
+import com.ifnoif.androidtestdemo.watch.WatchProcessFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import io.realm.Realm;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -92,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("Music Test", MusicFragment.class));
         mTestList.add(new ItemData("内存映射测试", MMapFragment.class));
         mTestList.add(new ItemData("RXJava", RxFragment.class));
+        mTestList.add(new ItemData("内存监控", WatchProcessFragment.class));
 
 
     }

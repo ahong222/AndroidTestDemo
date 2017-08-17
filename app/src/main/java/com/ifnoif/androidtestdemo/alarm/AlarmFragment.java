@@ -163,9 +163,9 @@ public class AlarmFragment extends BaseFragment {
                 // 数据库中保存的格式：包名/服务名:包名/服务名，如：
                 // com.example.notification/com.example.notification.NotificationService
                 // :com.example.smartface/com.example.smartface.notification.SmartFaceListenerService
-                if (string == null || !string.contains(NotificationService.class.getName())) {
                     startActivity(new Intent(
                             "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                if (string == null || !string.contains(NotificationService.class.getName())) {
                 } else {
                     PackageManager pm = getActivity().getPackageManager();
                     pm.setComponentEnabledSetting(new ComponentName(getContext(), NotificationService.class),

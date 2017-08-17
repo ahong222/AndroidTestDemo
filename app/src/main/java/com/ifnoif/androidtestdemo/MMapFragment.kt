@@ -38,19 +38,11 @@ class MMapFragment : BaseFragment {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = inflater!!.inflate(R.layout.mmap_layout, container, false)
-        init(view)
-        initRealm()
-
-        var time = System.currentTimeMillis();
-        var logList = SqliteManager.getInstance().queryLogCount()
-        Log.d("test", "log count:" + logList.size + " time:" + (System.currentTimeMillis() - time))
-//        SqliteManager.getInstance().deleteAllLog()
-        return view;
+    override fun getContentResource(): Int {
+        return R.layout.mmap_layout
     }
 
-    fun init(view: View) {
+    override fun init(view: View) {
         view.writeFileTest.setOnCheckedChangeListener { buttonView, isChecked -> writeLog = !isChecked }
         writeLog = !view.writeFileTest.isChecked
 
@@ -62,6 +54,12 @@ class MMapFragment : BaseFragment {
         view.sqliteThreadTest.setOnClickListener { sqliteThreadTest() }
 
 //        RealmActivity.initRealm()
+
+        initRealm()
+
+        var time = System.currentTimeMillis();
+        var logList = SqliteManager.getInstance().queryLogCount()
+        Log.d("test", "log count:" + logList.size + " time:" + (System.currentTimeMillis() - time))
     }
 
     fun writeByMMap() {

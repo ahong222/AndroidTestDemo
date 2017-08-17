@@ -25,16 +25,12 @@ import java.util.List;
 public class IntentFragment extends BaseFragment {
     public View startService;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.intent_test_layout, container, false);
-
-        init(view);
-        return view;
+    public int getContentResource() {
+        return R.layout.intent_test_layout;
     }
 
-    private void init(View view) {
+    public void init(View view) {
         view.findViewById(R.id.job_service).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
