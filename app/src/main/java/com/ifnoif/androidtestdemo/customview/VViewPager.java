@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.cmcm.osvideo.sdk.view;
+package com.ifnoif.androidtestdemo.customview;
 
 import android.content.Context;
 import android.content.res.Resources;

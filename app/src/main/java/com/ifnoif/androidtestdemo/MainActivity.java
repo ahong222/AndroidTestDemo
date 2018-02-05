@@ -2,14 +2,19 @@ package com.ifnoif.androidtestdemo;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +28,10 @@ import com.ifnoif.androidtestdemo.ORM.RealmActivity;
 import com.ifnoif.androidtestdemo.access_bility.AccessBilityFragment;
 import com.ifnoif.androidtestdemo.account.AccountMainActivity;
 import com.ifnoif.androidtestdemo.alarm.AlarmFragment;
+import com.ifnoif.androidtestdemo.anotations.AnotationFragment;
+import com.ifnoif.androidtestdemo.camera.CameraViewFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
+import com.ifnoif.androidtestdemo.glide.GlideFragment;
 import com.ifnoif.androidtestdemo.intent_test.IntentFragment;
 import com.ifnoif.androidtestdemo.jobservice_crash.MyActivity;
 import com.ifnoif.androidtestdemo.kotlin.KotlinActivity;
@@ -33,14 +41,27 @@ import com.ifnoif.androidtestdemo.okhttp.OkHttpFragment;
 import com.ifnoif.androidtestdemo.rxjava.RxFragment;
 import com.ifnoif.androidtestdemo.scroller.WheelFragment;
 import com.ifnoif.androidtestdemo.share_transation.MainShare;
+import com.ifnoif.androidtestdemo.sqlite.SqliteManager;
 import com.ifnoif.androidtestdemo.touch.TouchFragment;
 import com.ifnoif.androidtestdemo.watch.WatchProcessFragment;
+import com.syh.anotation.PrintMe;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+@PrintMe
+public class MainActivity extends FragmentActivity {
 
+    @PrintMe
+    public MainActivity() {
+        System.out.println("syh MainActivity");
+    }
+
+    @PrintMe
     private ArrayList<ItemData> mTestList = new ArrayList<ItemData>();
     private RecyclerView.Adapter<MyViewHolder> mAdapter;
     /**
@@ -53,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initListData();
         initListView();
 
@@ -62,6 +82,55 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        Log.i("ActivityManager","syh com.ifnoif.androidtestdemo time");
+//        writeData();
+    }
+
+    private void writeData() {
+        new Thread(){
+            @Override
+            public void run() {
+                StringBuilder stringBuilder = new StringBuilder();
+                for(int i=0;i<1000;i++){
+                    stringBuilder.append("lakjlkdjlajlkdjlajlkfjdlajljaflkdj利上加利加大了科技大楼立刻睡觉啊对了卡卡顿加");
+                }
+                SqliteManager.getInstance().insertLog(stringBuilder.toString());
+                byte[] bytes = stringBuilder.toString().getBytes();
+                File file = new File(getCacheDir(),"test"+Math.random()+" length:"+bytes.length);
+                System.out.println("syh:"+file.getAbsolutePath());
+                FileOutputStream fileOutputStream = null;
+                try {
+                    fileOutputStream = new FileOutputStream(file);
+                    while(true){
+                        fileOutputStream.write(bytes);
+
+                        System.out.println("syh:"+Utils.getStorageLogInfo(getApplicationContext()));
+                    }
+                }catch (Exception e){
+                    e.toString();
+                    System.out.println("syh:"+e.toString());
+                }finally {
+                    System.out.println("syh:"+file.getAbsolutePath());
+                    try {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println("syh:"+Utils.getStorageLogInfo(getApplicationContext()));
+                }
+
+                try {
+                    while (true) {
+                        SqliteManager.getInstance().insertLog(stringBuilder.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private void initListData() {
@@ -86,8 +155,11 @@ public class MainActivity extends AppCompatActivity {
         mTestList.add(new ItemData("内存映射测试", MMapFragment.class));
         mTestList.add(new ItemData("RXJava", RxFragment.class));
         mTestList.add(new ItemData("内存监控", WatchProcessFragment.class));
-
-
+        mTestList.add(new ItemData("相机", CameraViewFragment.class));
+        mTestList.add(new ItemData("注解", AnotationFragment.class));
+        mTestList.add(new ItemData("ListView测试", ListViewFragment.class));
+        mTestList.add(new ItemData("ViewPager测试", ViewPagerActivity.class));
+        mTestList.add(new ItemData("Glide测试", GlideFragment.class));
     }
 
     private void initListView() {
@@ -161,16 +233,22 @@ public class MainActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
+
     }
+
+    ArrayList<Bitmap> sList = new ArrayList<>();
 
     @Override
     public void onStop() {
         super.onStop();
 
+        MyApplication.measureTime();
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
+
     }
 
     private static class ItemData {
@@ -200,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-
             Intent intent = new Intent("android.intent.action.com.sankuai.meituan.meituanwaimaibusiness.remind_advance_order");
             sendBroadcast(intent);
 
@@ -214,11 +291,60 @@ public class MainActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
             } else {
-                startActivity(new Intent(MainActivity.this, itemData.classArg));
+                Intent newIntent = new Intent(MainActivity.this, itemData.classArg);
+                Uri uri = Uri.fromFile(new File("/sdcard/test.png"));
+
+                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+
+                startActivity(newIntent);
             }
 
 
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public Resources getResources() {
+        Resources resources = super.getResources();
+        Log.d("syh", "getBaseContext:" + (getBaseContext().getResources() == resources));
+        return resources;
+    }
+
+    @Override
+    public void setTheme(int resid) {
+//        super.setTheme(resid);
+        super.setTheme(0);
+    }
+
+
+    private void test() {
+        for (int i = 0; i < 2; i++) {
+            new Thread() {
+                @Override
+                public void run() {
+                    int count = 0;
+                    List<PackageInfo> list = getPackageManager()
+                            .getInstalledPackages(0);
+                    for (PackageInfo info : list) {
+                        if(count >=1000){
+                            break;
+                        }
+                        try {
+                            PackageInfo pi = getPackageManager()
+                                    .getPackageInfo(info.packageName,
+                                            PackageManager.GET_ACTIVITIES);
+                            Log.e("yanchen", "yanchen threadid:"+Thread.currentThread().getId()
+                                    + ",i:" + count++);
+                        } catch (PackageManager.NameNotFoundException e) {
+                        }
+                    }
+                }
+            }.start();
+        }
+    }
 }

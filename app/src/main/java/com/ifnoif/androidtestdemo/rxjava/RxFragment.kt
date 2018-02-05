@@ -21,10 +21,11 @@ import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import java.util.concurrent.TimeUnit
 
+
 /**
  * Created by shen on 17/7/17.
  */
-class RxFragment: BaseFragment() {
+class RxFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = LayoutInflater.from(context).inflate(R.layout.rx_fragment, container, false)
@@ -39,9 +40,11 @@ class RxFragment: BaseFragment() {
         initFlatMap()
         initZipText()
         initFlowableTest()
+        initDoubleSubscribe()
+        initTransformer()
     }
 
-    fun initObservableTest(){
+    fun initObservableTest() {
         var data = Observable.create(ObservableOnSubscribe<String> {
             item: ObservableEmitter<String> ->
             kotlin.run {
@@ -57,24 +60,24 @@ class RxFragment: BaseFragment() {
             }
         })
 
-        var listener = object:Observer<String> {
-            var disposable:Disposable? = null
+        var listener = object : Observer<String> {
+            var disposable: Disposable? = null
             override fun onComplete() {
-                Log.d(TAG,"onComplete")
+                Log.d(TAG, "onComplete")
             }
 
             override fun onNext(p0: String?) {
-                Log.d(TAG,"onNext ${p0}")
+                Log.d(TAG, "onNext ${p0}")
 //                disposable?.dispose()
             }
 
             override fun onSubscribe(p0: Disposable?) {
-                Log.d(TAG,"onSubscribe")
+                Log.d(TAG, "onSubscribe")
                 disposable = p0
             }
 
             override fun onError(p0: Throwable?) {
-                Log.d(TAG,"not implemented ${p0}")
+                Log.d(TAG, "not implemented ${p0}")
             }
         }
 
@@ -99,8 +102,8 @@ class RxFragment: BaseFragment() {
         }
     }
 
-    fun initMap(){
-        var observable = Observable.create<String>{
+    fun initMap() {
+        var observable = Observable.create<String> {
             it.onNext("1test")
         }
         var consumer = Consumer<Int> {
@@ -108,42 +111,42 @@ class RxFragment: BaseFragment() {
         }
 
         MapTest.setOnClickListener {
-            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map { p0 -> p0?.substring(0,1)?.toInt()?:-1 }.subscribe(consumer)
+            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).map { p0 -> p0?.substring(0, 1)?.toInt() ?: -1 }.subscribe(consumer)
         }
     }
 
-    fun initFlatMap(){
+    fun initFlatMap() {
         var observable = Observable.create<String> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Log.d(TAG,"在这里注册, thread:${Looper.getMainLooper().isCurrentThread}")
+                Log.d(TAG, "在这里注册, thread:${Looper.getMainLooper().isCurrentThread}")
             }
             it.onNext("Success")
         }
-        var registerConsumer = Consumer<Int>{
-            Log.d(TAG, "登陆结果:${if(it.toInt()==1)"success" else "fail"}")
+        var registerConsumer = Consumer<Int> {
+            Log.d(TAG, "登陆结果:${if (it.toInt() == 1) "success" else "fail"}")
         }
 
         FlatMapTest.setOnClickListener {
-            var flatMapper= object:Function<String, ObservableSource<Int>> {
+            var flatMapper = object : Function<String, ObservableSource<Int>> {
                 override fun apply(p0: String?): ObservableSource<Int> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        Log.d(TAG,"注册结果:${p0} thread:${Looper.getMainLooper().isCurrentThread}")
+                        Log.d(TAG, "注册结果:${p0} thread:${Looper.getMainLooper().isCurrentThread}")
                     }
                     var list = ArrayList<String>();
                     var charArray = p0?.toCharArray()
                     charArray?.forEach { list.add(it.toString()) }
                     return Observable.fromCallable {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            Log.d(TAG,"在这里登陆,thread:${Looper.getMainLooper().isCurrentThread}")
+                            Log.d(TAG, "在这里登陆,thread:${Looper.getMainLooper().isCurrentThread}")
                         }
-                        if ("success".equals(p0?:"", true)) 1 else 0
+                        if ("success".equals(p0 ?: "", true)) 1 else 0
                     }.delay(2, TimeUnit.SECONDS).subscribeOn(Schedulers.io())
                 }
             }
 
             observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext({
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    Log.d(TAG,"doOnNext 注册结果 ${it},thread:${Looper.getMainLooper().isCurrentThread}")
+                    Log.d(TAG, "doOnNext 注册结果 ${it},thread:${Looper.getMainLooper().isCurrentThread}")
                 }
             }).flatMap(flatMapper).subscribe(registerConsumer)
 
@@ -163,19 +166,19 @@ class RxFragment: BaseFragment() {
     fun initZipText() {
         var observable1 = Observable.create<String> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Log.d(TAG,"create data1 ,thread:${Thread.currentThread().id}")
+                Log.d(TAG, "create data1 ,thread:${Thread.currentThread().id}")
             }
             it.onNext("A")
             it.onNext("B")
         }.subscribeOn(Schedulers.io())
         var observable2 = Observable.create<Int> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Log.d(TAG,"create data2 ,thread:${Thread.currentThread().id}")
+                Log.d(TAG, "create data2 ,thread:${Thread.currentThread().id}")
             }
             it.onNext(1)
             it.onNext(2)
         }.filter({
-            it.toInt()>1
+            it.toInt() > 1
         }).subscribeOn(Schedulers.io())
         ZipTest.setOnClickListener {
             Observable.zip(observable1, observable2, BiFunction<String, Int, String> { p0, p1 -> p0 + p1 })
@@ -204,7 +207,7 @@ class RxFragment: BaseFragment() {
             }
         }, BackpressureStrategy.LATEST).subscribeOn(Schedulers.io())
         FlowableTest.setOnClickListener {
-//            Flowable.zip(observable1, observable2, BiFunction<String, Int, String> { p0, p1 -> p0 + p1 })
+            //            Flowable.zip(observable1, observable2, BiFunction<String, Int, String> { p0, p1 -> p0 + p1 })
 //                    .observeOn(AndroidSchedulers.mainThread())
 //                    .subscribe({
 //                        Log.d(TAG, "result:${it}")
@@ -242,7 +245,69 @@ class RxFragment: BaseFragment() {
         }
 
 
+    }
 
+    fun initDoubleSubscribe() {
+        multiSubscribe.setOnClickListener {
+            Observable.just("a", "b", "c").subscribeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<String> {
+                override fun onNext(p0: String) {
+                    println("p0:" + p0 + " thred:" + (Thread.currentThread().id == Looper.getMainLooper().thread.id))
+                }
+
+                override fun onComplete() {
+                    println("onComplete")
+                }
+
+                override fun onError(p0: Throwable) {
+                    println("onError")
+                }
+
+                override fun onSubscribe(p0: Disposable) {
+                    println("onSubscribe")
+                }
+            })
+        }
+    }
+
+    fun initTransformer() {
+
+        transformer.setOnClickListener {
+            var transformer = ObservableTransformer<String, String>() {
+                a ->
+                ////                val consumer2 = Consumer<String> { s -> Log.d("MainActivity", Thread.currentThread().name + " String:" + s) }
+////
+                var consumer = Consumer<String> { i -> println("transformer" + i) }
+                a.subscribe(consumer)
+                a.doOnSubscribe {
+                    println("doOnSubscribe:"+it+(Thread.currentThread().id == Looper.getMainLooper().thread.id))
+                }
+                a.doOnComplete {
+                    println("onComplete:"+it+(Thread.currentThread().id == Looper.getMainLooper().thread.id))
+                }
+            }
+            Observable.create<String> {
+                var1->
+                var1.onNext("123")
+                var1.onNext("456")
+                var1.onComplete()
+            }.compose(transformer).subscribeOn(Schedulers.io()).subscribe(object : Observer<String> {
+                override fun onNext(p0: String) {
+                    println("p0:" + p0 + " thred:" + (Thread.currentThread().id == Looper.getMainLooper().thread.id))
+                }
+
+                override fun onComplete() {
+                    println("onComplete")
+                }
+
+                override fun onError(p0: Throwable) {
+                    println("onError")
+                }
+
+                override fun onSubscribe(p0: Disposable) {
+                    println("onSubscribe")
+                }
+            })
+        }
     }
 
 }

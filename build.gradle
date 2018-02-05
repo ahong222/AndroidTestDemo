@@ -20,6 +20,23 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url "http://10.4.240.60:8081/nexus/content/groups/public"
+        }
+        maven {
+            url "http://10.4.240.60:8081/nexus/content/groups/public-snapshots"
+        }
+        maven {
+            url "http://nexu:8081/nexus/content/groups/public-snapshots"
+        }
+        maven { url "http://mvn.dianpingoa.com/android-nova" }
+        maven {
+            url "http://JRAF.org/static/maven/2"
+        }
+        maven { url 'http://nexus:8081/nexus/content/groups/public' }
+        maven { url 'http://depot.sankuai.com/nexus/content/groups/public' }
+        mavenLocal()
+        mavenCentral()
         jcenter()
     }
 }

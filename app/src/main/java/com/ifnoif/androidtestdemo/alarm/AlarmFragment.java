@@ -1,5 +1,6 @@
 package com.ifnoif.androidtestdemo.alarm;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -94,23 +95,26 @@ public class AlarmFragment extends BaseFragment {
 
     public static void startAlarmExact(Context context) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent("com.syh.action.alarm");
-        intent.putExtra("type", 0);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 60000, pendingIntent);
+        PendingIntent pendingIntent = getPendingIntent(context);
+        alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 6000, pendingIntent);
 
-        checkNetWork(context);
-        wakeScreen(context);
+//        checkNetWork(context);
+//        wakeScreen(context);
     }
 
     public static void stopAlarmExact(Context context) {
+        PendingIntent pendingIntent = getPendingIntent(context);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent("com.syh.action.alarm");
+        alarmManager.cancel(pendingIntent);
+    }
+
+    public static PendingIntent getPendingIntent(Context context){
+        Intent intent = new Intent(context, AlarmService.class);
         intent.putExtra("type", 10);
         intent.putExtra("newExtra", 0);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        alarmManager.cancel(pendingIntent);
+        return pendingIntent;
     }
 
     public static void startExactAndAllowWhileIdle(Context context) {
@@ -126,6 +130,7 @@ public class AlarmFragment extends BaseFragment {
 
     public static void startAlarmClock(final Context context) {
         new Thread() {
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void run() {
                 try {
@@ -135,13 +140,36 @@ public class AlarmFragment extends BaseFragment {
                 }
 
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                Intent intent = new Intent("com.syh.action.alarmclock");
+                Intent intent = new Intent(context, AlarmService.class);
                 intent.putExtra("type", 2);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent pendingIntent = PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 Intent showIntent = new Intent(context, MainActivity.class);
                 PendingIntent showPendingIntent = PendingIntent.getActivity(context, 101, showIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 60000, showPendingIntent), pendingIntent);
+                alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 6000, showPendingIntent), pendingIntent);
+            }
+        }.start();
+
+    }
+
+    public static void stopAlarmClock(final Context context) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(context, AlarmService.class);
+                intent.putExtra("type", 2);
+                PendingIntent pendingIntent = PendingIntent.getService(context, 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+//                Intent showIntent = new Intent(context, MainActivity.class);
+//                PendingIntent showPendingIntent = PendingIntent.getActivity(context, 101, showIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.cancel(pendingIntent);
             }
         }.start();
 
@@ -177,6 +205,19 @@ public class AlarmFragment extends BaseFragment {
             }
         });
 
+        view.findViewById(R.id.start_alarm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startAlarmExact(getContext());
+            }
+        });
+
+        view.findViewById(R.id.stop_alarm).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopAlarmExact(getContext());
+            }
+        });
         return view;
     }
 

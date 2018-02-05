@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 
+//import butterknife.BindView;
+//import butterknife.ButterKnife;
+
 
 /**
  * Created by apple on 17-2-20.
@@ -21,7 +24,6 @@ import com.android.volley.toolbox.ImageLoader;
 
 public class VolleyFragment extends BaseFragment {
 
-//    @BindView(R.id.image_view)
     ImageView mImageView;
 
 //    @BindView(R.id.load)
@@ -37,7 +39,6 @@ public class VolleyFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.volley_layout, container, false);
 
-//        ButterKnife.bind(this, view);
         mImageView = (ImageView)view.findViewById(R.id.image_view);
         mLoad = (Button)view.findViewById(R.id.load);
         mLoad2 = (Button)view.findViewById(R.id.load2);

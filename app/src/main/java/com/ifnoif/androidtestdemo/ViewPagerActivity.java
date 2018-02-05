@@ -5,13 +5,15 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.cmcm.osvideo.sdk.view.VViewPager;
+
+import com.ifnoif.androidtestdemo.customview.VViewPager;
 
 import java.util.HashMap;
 
@@ -22,17 +24,20 @@ import java.util.HashMap;
 
 public class ViewPagerActivity extends Activity {
 
-    private com.cmcm.osvideo.sdk.view.VViewPager viewPager;
+    private ViewPager viewPager;
     private HashMap<Integer, View> viewHashMap = new HashMap<Integer, View>();
     private PagerAdapter mAdapter = new PagerAdapter() {
         @Override
         public float getPageWidth(int position) {
-            return 1f;
+            if(position==2){
+                return 1;
+            }
+            return 0.8f;
         }
 
         @Override
         public int getCount() {
-            return 13;
+            return 5;
         }
 
         @Override
@@ -49,16 +54,17 @@ public class ViewPagerActivity extends Activity {
             View view = viewHashMap.get(position);
             if (view == null) {
                 view = new Button(ViewPagerActivity.this);
-                view.setBackgroundColor(0x99775566 + (int) Math.random() * 1000000);
+                view.setBackgroundColor(0x99775566 + (int) (Math.random() * 1000000));
                 ((Button) view).setText("item position:" + position);
                 view.setTag("tag" + position);
                 viewHashMap.put(position, view);
             }
 
-            VViewPager.LayoutParams layoutParams = new VViewPager.LayoutParams();
+            ViewPager.LayoutParams layoutParams = new ViewPager.LayoutParams();
             layoutParams.width = getResources().getDisplayMetrics().widthPixels;
             layoutParams.height = getResources().getDisplayMetrics().widthPixels;
             layoutParams.gravity = Gravity.CENTER;
+
 
             container.addView(view, layoutParams);
             return view;
@@ -77,8 +83,8 @@ public class ViewPagerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_pager_test);
-        viewPager = (VViewPager) findViewById(R.id.view_pager);
-        viewPager.setPageMargin(-60);
+        viewPager = (ViewPager) findViewById(R.id.view_pager2);
+//        viewPager.setPageMargin(-60);
 
         viewPager.setAdapter(mAdapter);
         viewPager.setOffscreenPageLimit(2);

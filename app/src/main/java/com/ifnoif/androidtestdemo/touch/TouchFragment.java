@@ -5,6 +5,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.Toast;
 
 import com.ifnoif.androidtestdemo.R;
 
@@ -60,6 +63,22 @@ public class TouchFragment extends Fragment {
         View view = inflater.inflate(R.layout.touch_layout, container, false);
         view.findViewById(R.id.view1).setTag("view1");
         view.findViewById(R.id.view2).setTag("view2");
+
+        view.findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation animation = new TranslateAnimation(0f,0f,500f,500f);
+                animation.setFillAfter(true);
+                view.findViewById(R.id.test1).startAnimation(animation);
+            }
+        });
+        view.findViewById(R.id.test1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return view;
     }
 

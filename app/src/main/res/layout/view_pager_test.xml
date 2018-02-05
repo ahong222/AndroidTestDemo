@@ -6,11 +6,20 @@
     android:clipChildren="false"
     android:layerType="software">
 
-    <com.cmcm.osvideo.sdk.view.VViewPager
+    <com.ifnoif.androidtestdemo.customview.VViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="100dp"
-        android:clipChildren="false"></com.cmcm.osvideo.sdk.view.VViewPager>
+        android:clipChildren="false"
+        android:visibility="gone"></com.ifnoif.androidtestdemo.customview.VViewPager>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="100dp"
+        android:clipChildren="false"></android.support.v4.view.ViewPager>
 </LinearLayout>

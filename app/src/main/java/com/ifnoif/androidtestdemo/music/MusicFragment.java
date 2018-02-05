@@ -14,6 +14,7 @@ import com.ifnoif.androidtestdemo.BaseFragment;
 import com.ifnoif.androidtestdemo.R;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 /**
  * Created by shen on 17/4/23.
@@ -63,6 +64,15 @@ public class MusicFragment extends BaseFragment {
         });
 
 
+        initMediaPlayer();
+        return view;
+        // super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    private void initMediaPlayer() {
+        if (mediaPlayer != null) {
+            return;
+        }
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
 
@@ -74,14 +84,29 @@ public class MusicFragment extends BaseFragment {
                 mp.start();
             }
         });
+    }
 
-        return view;
-        // super.onCreateView(inflater, container, savedInstanceState);
+    public String isRestricted() {
+        try {
+            Class clazz = Class.forName("com.android.server.AppOpsService");
+            System.out.println("syh");
+        } catch (Exception e) {
+
+        }
+        try {
+            Method method = MediaPlayer.class.getMethod("isRestricted");
+            method.setAccessible(true);
+            Object object = method.invoke(mediaPlayer);
+            return object == null ? null : object.toString();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void play() {
-
-
+        initMediaPlayer();
+        Log.d("syh", "isRestricted:" + isRestricted());
+        mediaPlayer.setVolume(12,12);
         if (prepared) {
             mediaPlayer.reset();
 

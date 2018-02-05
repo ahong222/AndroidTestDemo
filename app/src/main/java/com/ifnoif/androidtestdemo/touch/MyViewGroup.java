@@ -43,15 +43,15 @@ public class MyViewGroup extends LinearLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         MyLog.d("dispatchTouchEvent:" + getTouch(ev));
-        super.dispatchTouchEvent(ev);
-        return true;//
+        return super.dispatchTouchEvent(ev);
+//        return true;//
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         MyLog.d("onInterceptTouchEvent:" + getTouch(ev));
-        super.onInterceptTouchEvent(ev);
-        return true;//
+        return super.onInterceptTouchEvent(ev);
+//        return true;//
     }
 
     @Override
