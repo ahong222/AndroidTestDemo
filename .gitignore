@@ -7,4 +7,5 @@
 /build
 /captures
 /speechDemo/build
+/speechDemo/build/*
 /.idea/*

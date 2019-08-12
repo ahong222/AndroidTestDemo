@@ -2,7 +2,9 @@
 buildscript {
     ext.kotlin_version = '1.1.1'
     repositories {
-        jcenter()
+        maven {
+            url "https://maven.aliyun.com/nexus/content/repositories/jcenter"
+        }
     }
     dependencies {
 //        classpath 'com.android.tools.build:gradle:2.3.1'
@@ -25,13 +27,13 @@ apply plugin: 'realm-android'
 
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId "com.ifnoif.androidtestdemo"
-        minSdkVersion 16
-        targetSdkVersion 24
+        minSdkVersion 21
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -43,15 +45,6 @@ android {
 
     }
 
-    signingConfigs {
-        sankuai {
-            storeFile file("keystore/meituan-debug.keystore")
-            storePassword "1234567"
-            keyAlias "meituan"
-            keyPassword "12345678"
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -61,7 +54,6 @@ android {
             shrinkResources false
 
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.sankuai
         }
 
         debug {
@@ -71,7 +63,6 @@ android {
             zipAlignEnabled true
             shrinkResources false
 
-            signingConfig signingConfigs.sankuai
         }
     }
 
@@ -94,17 +85,19 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:25.1.1'
     androidTestCompile 'com.android.support.test:runner:0.5'
 
-    compile 'com.android.support:appcompat-v7:22.2.0'
-//    compile('com.android.support:appcompat-v7:23.1.1') {
-//        exclude module: 'support-v4'
-//    }
+//    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile('com.android.support:appcompat-v7:23.1.1') {
+        exclude module: 'support-v4'
+    }
     compile('com.android.support:recyclerview-v7:23.1.1') {
         exclude module: 'support-v4'
     }
     compile('com.android.support:design:22.2.0') {
         exclude module: 'support-v4'
     }
-    compile 'com.android.support:cardview-v7:22.2.0'
+    compile ('com.android.support:cardview-v7:23.1.1') {
+        exclude module: 'support-v4'
+    }
 
 //    compile 'com.jakewharton:butterknife:8.5.1'
 //    apt 'com.jakewharton:butterknife-compiler:8.5.1'
@@ -135,8 +128,6 @@ dependencies {
 // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile 'io.reactivex.rxjava2:rxjava:2.1.5'
 
-
-    compile 'com.dianping.android.sdk:networklog:1.1.15'
 
     compile 'com.google.dagger:dagger-android:2.11'
 //    compile 'com.google.dagger:dagger-android-support:2.11' // if you use the support libraries

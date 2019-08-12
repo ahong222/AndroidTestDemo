@@ -21,10 +21,11 @@ class KotlinFragment : BaseFragment() {
     }
 
     fun init() {
-        view1?.findViewById(R.id.kotlinButton)?.setOnClickListener { v ->
+        var button:View? = view1?.findViewById(R.id.kotlinButton)
+        button?.setOnClickListener { v ->
             run {
             }
-        };
+        }
     }
 
 }

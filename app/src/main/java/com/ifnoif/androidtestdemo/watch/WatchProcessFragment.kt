@@ -291,10 +291,10 @@ class WatchProcessFragment : BaseFragment() {
 
     inner class MyViewHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
-        var textView = (itemView?.findViewById(android.R.id.text1)) as TextView
+        var textView:TextView? = (itemView?.findViewById(android.R.id.text1))
         fun onBindView(position: Int) {
             var resultInfo = mWatchResultList[position]
-            textView.text = resultInfo.process + " " + resultInfo.info
+            textView?.text = resultInfo.process + " " + resultInfo.info
         }
     }
 

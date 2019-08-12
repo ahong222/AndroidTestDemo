@@ -5,8 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.dianping.networklog.Logan;
-
 import java.util.List;
 
 import io.realm.Realm;
@@ -68,9 +66,6 @@ public class MyApplication extends Application {
 
         if (getPackageName().equals(processName)) {
             Realm.init(getApplicationContext());
-
-            Logan.init(this, 15);
-            Logan.w("this:"+this, Logan.CODE_LOG);
         }
 
         A.test("abc");

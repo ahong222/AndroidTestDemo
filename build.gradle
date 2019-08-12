@@ -3,10 +3,13 @@
 buildscript {
     ext.kotlin_version = '1.1.1'
     repositories {
-        jcenter()
+        maven {
+            url "https://maven.aliyun.com/nexus/content/repositories/jcenter"
+        }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:2.3.3'
 
 //        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 //        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -21,23 +24,8 @@ buildscript {
 allprojects {
     repositories {
         maven {
-            url "http://10.4.240.60:8081/nexus/content/groups/public"
+            url "https://maven.aliyun.com/nexus/content/repositories/jcenter"
         }
-        maven {
-            url "http://10.4.240.60:8081/nexus/content/groups/public-snapshots"
-        }
-        maven {
-            url "http://nexu:8081/nexus/content/groups/public-snapshots"
-        }
-        maven { url "http://mvn.dianpingoa.com/android-nova" }
-        maven {
-            url "http://JRAF.org/static/maven/2"
-        }
-        maven { url 'http://nexus:8081/nexus/content/groups/public' }
-        maven { url 'http://depot.sankuai.com/nexus/content/groups/public' }
-        mavenLocal()
-        mavenCentral()
-        jcenter()
     }
 }
 
