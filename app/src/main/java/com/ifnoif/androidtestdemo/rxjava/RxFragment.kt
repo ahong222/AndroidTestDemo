@@ -42,6 +42,7 @@ class RxFragment : BaseFragment() {
         initFlowableTest()
         initDoubleSubscribe()
         initTransformer()
+        initMerge()
     }
 
     fun initObservableTest() {
@@ -310,4 +311,9 @@ class RxFragment : BaseFragment() {
         }
     }
 
+    fun initMerge() {
+        merge.setOnClickListener {
+            MergeUtils.testMerge()
+        }
+    }
 }

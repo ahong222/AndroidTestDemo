@@ -45,4 +45,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="transformer"/>
+    <Button
+        android:id="@+id/merge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="merge操作"/>
 </LinearLayout>

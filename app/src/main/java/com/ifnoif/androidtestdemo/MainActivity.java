@@ -32,6 +32,8 @@ import com.ifnoif.androidtestdemo.anotations.AnotationFragment;
 import com.ifnoif.androidtestdemo.camera.CameraViewFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
 import com.ifnoif.androidtestdemo.glide.GlideFragment;
+import com.ifnoif.androidtestdemo.hook.FakeActivity;
+import com.ifnoif.androidtestdemo.hook.HookFragment;
 import com.ifnoif.androidtestdemo.intent_test.IntentFragment;
 import com.ifnoif.androidtestdemo.jobservice_crash.MyActivity;
 import com.ifnoif.androidtestdemo.kotlin.KotlinActivity;
@@ -160,6 +162,7 @@ public class MainActivity extends FragmentActivity {
         mTestList.add(new ItemData("ListView测试", ListViewFragment.class));
         mTestList.add(new ItemData("ViewPager测试", ViewPagerActivity.class));
         mTestList.add(new ItemData("Glide测试", GlideFragment.class));
+        mTestList.add(new ItemData("HookActivity", HookFragment.class));
     }
 
     private void initListView() {
