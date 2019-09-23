@@ -134,6 +134,7 @@
 
         <!--hook-->
         <activity android:name=".hook.FakeActivity"/>
+        <activity android:name=".dagger2.DaggerActivity"/>
 
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
@@ -168,6 +169,10 @@
             </intent-filter>
         </receiver>
         <service android:name=".alarm.AlarmService" />
+
+        <service android:name=".hook.FakeService" />
+        <!-- 应该到插件apk中加声明 -->
+        <service android:name=".hook.PluginService" />
     </application>
 
 </manifest>

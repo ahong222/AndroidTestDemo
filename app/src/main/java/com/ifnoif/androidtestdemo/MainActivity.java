@@ -31,6 +31,7 @@ import com.ifnoif.androidtestdemo.alarm.AlarmFragment;
 import com.ifnoif.androidtestdemo.anotations.AnotationFragment;
 import com.ifnoif.androidtestdemo.camera.CameraViewFragment;
 import com.ifnoif.androidtestdemo.customview.CustomViewFragment;
+import com.ifnoif.androidtestdemo.dagger2.DaggerActivity;
 import com.ifnoif.androidtestdemo.glide.GlideFragment;
 import com.ifnoif.androidtestdemo.hook.FakeActivity;
 import com.ifnoif.androidtestdemo.hook.HookFragment;
@@ -163,6 +164,7 @@ public class MainActivity extends FragmentActivity {
         mTestList.add(new ItemData("ViewPager测试", ViewPagerActivity.class));
         mTestList.add(new ItemData("Glide测试", GlideFragment.class));
         mTestList.add(new ItemData("HookActivity", HookFragment.class));
+        mTestList.add(new ItemData("Dagger2", DaggerActivity.class));
     }
 
     private void initListView() {
